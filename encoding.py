@@ -7,9 +7,7 @@ from math import remainder
 
 from pysat.solvers import Glucose3
 from pysat.formula import CNF
-import kagglehub
 
-path = kagglehub.dataset_download("radcliffe/3-million-sudoku-puzzles-with-ratings")
 
 grid = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -25,30 +23,31 @@ grid = [
 
 def var(r, c, d):
         return 81*r + 9*c + d
-def cell_variables(r, c):
+def cell_variables(r, c)-> list[int]:
         return [var(r, c, d) for d in range(1,10)]
-def row_variables(r, d):
+def row_variables(r, d)-> list[int]:
         return [var(r, c, d) for c in range(9)]
-def column_variables(c, d):
+def column_variables(c, d)-> list[int]:
         return [var(r, c, d) for r in range(9)]
-def block_variables(r, c, d):
+def block_variables(r, c, d) -> list[int]:
         return [var(br, bc, d)
-                for br in range((r // 3) * 3, (r // 3) * 3 + 3)
-                for bc in range((c // 3) * 3, (c // 3) * 3 + 3)]
-def at_least_one(vars):
+                for br in range(r * 3, r * 3 + 3)
+                for bc in range(c * 3, c * 3 + 3)]
+
+def at_least_one(vars)-> list[int]:
         return [vars]
-def at_most_one(vars):
+def at_most_one(vars)-> list[int]:
         return [[-u, -v] for u, v in combinations(vars, 2)]
-def exactly_one(vars):
+def exactly_one(vars)-> list[int]:
         return at_least_one(vars) + at_most_one(vars)
-def encode_cell_constraints():
+def encode_cell_constraints()-> list[int]:
         clauses = []
         for r in range(9):
                 for c in range(9):
                         vars = cell_variables(r, c)
                         clauses += exactly_one(vars)
         return clauses
-def encode_block_constraints():
+def encode_block_constraints()-> list[int]:
         clauses = []
         for r in range(3):
                 for c in range(3):
@@ -56,21 +55,21 @@ def encode_block_constraints():
                                 vars = block_variables(r, c, d)
                                 clauses += exactly_one(vars)
         return clauses
-def encode_row_constraints():
+def encode_row_constraints()-> list[int]:
         clauses = []
         for r in range(9):
                 for d in range(1, 10):
                         vars = row_variables(r, d)
                         clauses += exactly_one(vars)
         return clauses
-def encode_column_constraints():
+def encode_column_constraints()-> list[int]:
         clauses = []
         for c in range(9):
                 for d in range(1, 10):
                         vars = column_variables(c, d)
                         clauses += exactly_one(vars)
         return clauses
-def encode_clues(grid):
+def encode_clues(grid)-> list[int]:
         clauses = []
         for r in range(9):
                 for c in range(9):
@@ -79,7 +78,7 @@ def encode_clues(grid):
                                 clauses.append([var(r, c, d)])
         return clauses
 
-def encode_sudoku(grid):
+def encode_sudoku(grid)-> list[int]:
         clauses = []
         clauses += encode_row_constraints()
         clauses += encode_column_constraints()
@@ -113,11 +112,11 @@ def decode_model(model):
                         grid[r][c] = d
         return grid
 
-model = sudoku_solve(grid)
-
-if model:
-        solution = decode_model(model)
-        for r in solution:
-                print(r)
-else:
-        print("No solution")
+if __name__ == "__main__":
+        model = sudoku_solve(grid)
+        if model:
+                solution = decode_model(model)
+                for r in solution:
+                        print(r)
+        else:
+                print("No solution")
