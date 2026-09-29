@@ -1,20 +1,5 @@
-import sys
 from docplex.cp.model import CpoModel, all_diff
-
-if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-    sys.stdout.reconfigure(encoding='utf-8')
-
-grid = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
+from utils import DEFAULT_GRID, print_grid
 
 
 def solve_sudoku_cplex_cp(initial_grid):
@@ -58,16 +43,13 @@ def solve_sudoku_cplex_cp(initial_grid):
     sol = model.solve(LogVerbosity="Quiet")
 
     if sol and sol.is_solution():
-        solved_grid = [[sol[cells[r, c]] for c in range(9)] for r in range(9)]
-        return solved_grid
+        return [[sol[cells[r, c]] for c in range(9)] for r in range(9)]
     return None
 
 
 if __name__ == "__main__":
-    solution = solve_sudoku_cplex_cp(grid)
+    solution = solve_sudoku_cplex_cp(DEFAULT_GRID)
     if solution:
-        print("=== KET QUA GIAI BANG IBM CPLEX CP (CP OPTIMIZER) ===")
-        for row in solution:
-            print(row)
+        print_grid(solution, "GIAI SUDOKU BANG IBM CPLEX CP (CP OPTIMIZER)")
     else:
         print("Khong tim thay nghiem.")

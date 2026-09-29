@@ -1,47 +1,29 @@
-import sys
 import pulp
-
-# Ensure UTF-8 output on Windows console
-if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-    sys.stdout.reconfigure(encoding='utf-8')
-
-grid = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
+from utils import DEFAULT_GRID, print_grid
 
 
 def solve_sudoku_ilp(initial_grid):
     """
-    Giải Sudoku bằng quy hoạch nguyên tuyến tính (ILP / 0-1 Integer Programming)
-    sử dụng thư viện PuLP.
+    Giai Sudoku bang quy hoach nguyen tuyen tinh (ILP / 0-1 Integer Programming)
+    su dung thu vien PuLP (CBC Solver).
     """
-    # Khởi tạo bài toán (không cần hàm mục tiêu vì chỉ cần tìm nghiệm khả thi)
     prob = pulp.LpProblem("Sudoku_ILP", pulp.LpMinimize)
 
-    # 1. Khai báo 9x9x9 = 729 biến nhị phân x[r, c, v] in {0, 1}
-    # x[r, c, v] = 1 nếu ô (r, c) nhận giá trị v, ngược lại = 0
+    # 1. 729 bien nhi phan x[r, c, v] in {0, 1}
     x = pulp.LpVariable.dicts(
         "x",
         ((r, c, v) for r in range(9) for c in range(9) for v in range(1, 10)),
         cat=pulp.LpBinary
     )
 
-    # 2. Ràng buộc gợi ý ban đầu (Initial Clues)
+    # 2. Rang buoc cac o co san (Clues)
     for r in range(9):
         for c in range(9):
             val = initial_grid[r][c]
             if val != 0:
                 prob += x[r, c, val] == 1, f"Clue_{r}_{c}"
 
-    # 3. Mỗi ô (r, c) phải nhận đúng một giá trị v trong [1..9]
+    # 3. Moi o (r, c) phai nhan dung mot gia tri
     for r in range(9):
         for c in range(9):
             prob += (
@@ -49,7 +31,7 @@ def solve_sudoku_ilp(initial_grid):
                 f"Cell_OneValue_{r}_{c}"
             )
 
-    # 4. Trong mỗi hàng r, mỗi giá trị v xuất hiện đúng 1 lần
+    # 4. Trong moi hang r, moi gia tri v xuat hien dung 1 lan
     for r in range(9):
         for v in range(1, 10):
             prob += (
@@ -57,7 +39,7 @@ def solve_sudoku_ilp(initial_grid):
                 f"Row_Unique_{r}_{v}"
             )
 
-    # 5. Trong mỗi cột c, mỗi giá trị v xuất hiện đúng 1 lần
+    # 5. Trong moi cot c, moi gia tri v xuat hien dung 1 lan
     for c in range(9):
         for v in range(1, 10):
             prob += (
@@ -65,7 +47,7 @@ def solve_sudoku_ilp(initial_grid):
                 f"Col_Unique_{c}_{v}"
             )
 
-    # 6. Trong mỗi khối 3x3, mỗi giá trị v xuất hiện đúng 1 lần
+    # 6. Trong moi khoi 3x3, moi gia tri v xuat hien dung 1 lan
     for br in range(3):
         for bc in range(3):
             for v in range(1, 10):
@@ -78,10 +60,10 @@ def solve_sudoku_ilp(initial_grid):
                     f"Block_Unique_{br}_{bc}_{v}"
                 )
 
-    # 7. Giải bài toán ILP (tắt in log mặc định của solver)
+    # 7. Giai bai toan (an log solver)
     prob.solve(pulp.PULP_CBC_CMD(msg=False))
 
-    # 8. Trích xuất nghiệm
+    # 8. Trich xuat nghiem
     if prob.status == pulp.constants.LpStatusOptimal:
         solved_grid = [[0 for _ in range(9)] for _ in range(9)]
         for r in range(9):
@@ -95,10 +77,8 @@ def solve_sudoku_ilp(initial_grid):
 
 
 if __name__ == "__main__":
-    solution = solve_sudoku_ilp(grid)
+    solution = solve_sudoku_ilp(DEFAULT_GRID)
     if solution:
-        print("=== KET QUA GIAI BANG ILP (INTEGER LINEAR PROGRAMMING) ===")
-        for row in solution:
-            print(row)
+        print_grid(solution, "GIAI SUDOKU BANG ILP (PuLP / CBC)")
     else:
         print("Khong tim thay nghiem.")

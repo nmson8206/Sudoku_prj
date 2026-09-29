@@ -1,20 +1,5 @@
-import sys
 from docplex.mp.model import Model
-
-if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-    sys.stdout.reconfigure(encoding='utf-8')
-
-grid = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
+from utils import DEFAULT_GRID, print_grid
 
 
 def solve_sudoku_cplex_mip(initial_grid):
@@ -23,8 +8,7 @@ def solve_sudoku_cplex_mip(initial_grid):
     """
     mdl = Model(name="Sudoku_CPLEX_MIP")
 
-    # 1. 729 bien nhi phan x[r, c, v]
-    # x[r, c, v] = 1 neu o (r, c) nhan gia tri v, nguoc lai = 0
+    # 1. 729 bien nhi phan x[r, c, v] in {0, 1}
     x = mdl.binary_var_dict(
         ((r, c, v) for r in range(9) for c in range(9) for v in range(1, 10)),
         name="x"
@@ -80,10 +64,8 @@ def solve_sudoku_cplex_mip(initial_grid):
 
 
 if __name__ == "__main__":
-    solution = solve_sudoku_cplex_mip(grid)
+    solution = solve_sudoku_cplex_mip(DEFAULT_GRID)
     if solution:
-        print("=== KET QUA GIAI BANG IBM CPLEX MIP ===")
-        for row in solution:
-            print(row)
+        print_grid(solution, "GIAI SUDOKU BANG IBM CPLEX MIP")
     else:
         print("Khong tim thay nghiem.")

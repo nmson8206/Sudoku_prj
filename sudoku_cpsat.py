@@ -1,25 +1,10 @@
-import sys
 from ortools.sat.python import cp_model
-
-if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
-    sys.stdout.reconfigure(encoding='utf-8')
-
-grid = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
+from utils import DEFAULT_GRID, print_grid
 
 
 def solve_sudoku_cpsat(initial_grid):
     """
-    Giai Sudoku bang Google OR-Tools CP-SAT (Constraint Programming + SAT).
+    Giai Sudoku bang Google OR-Tools CP-SAT (Constraint Programming).
     """
     model = cp_model.CpModel()
 
@@ -65,10 +50,8 @@ def solve_sudoku_cpsat(initial_grid):
 
 
 if __name__ == "__main__":
-    solution = solve_sudoku_cpsat(grid)
+    solution = solve_sudoku_cpsat(DEFAULT_GRID)
     if solution:
-        print("=== KET QUA GIAI BANG GOOGLE OR-TOOLS CP-SAT ===")
-        for row in solution:
-            print(row)
+        print_grid(solution, "GIAI SUDOKU BANG GOOGLE OR-TOOLS CP-SAT")
     else:
         print("Khong tim thay nghiem.")
