@@ -1,9 +1,8 @@
 """
-Facade module trỏ tới package sat_encodings.
-Giữ tính tương thích ngược cho toàn bộ codebase.
+Facade wrapper tương thích ngược trỏ tới package encodings.
 """
 
-from sat_encodings import (
+from encodings import (
     at_least_one,
     amo_pairwise,
     amo_binary,

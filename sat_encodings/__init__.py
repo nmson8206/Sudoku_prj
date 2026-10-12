@@ -1,15 +1,14 @@
 """
-Package sat_encodings:
-Cung cấp các phương pháp mã hóa SAT cho ALO (At-Least-One) và AMO (At-Most-One).
+Package encodings: Các kỹ thuật mã hóa SAT cho ALO, AMO và Exactly-One (EO).
 """
 
 from .alo import at_least_one
-from .amo_pairwise import amo_pairwise
-from .amo_binary import amo_binary
-from .amo_commander import amo_commander
-from .amo_product import amo_product
-from .amo_seqcounter import amo_seqcounter
-from .cardinality_manager import at_most_one, exactly_one, AVAILABLE_METHODS
+from .pairwise import amo_pairwise
+from .binary import amo_binary
+from .commander import amo_commander
+from .product import amo_product
+from .seqcounter import amo_seqcounter
+from .manager import at_most_one, exactly_one, AVAILABLE_METHODS
 
 __all__ = [
     "at_least_one",
