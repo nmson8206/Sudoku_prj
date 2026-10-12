@@ -1,6 +1,6 @@
-from itertools import combinations
 from pysat.solvers import Glucose3
 from utils import DEFAULT_GRID, print_grid
+from sat_encodings import exactly_one, AVAILABLE_METHODS
 
 
 def var(r, c, d):
@@ -27,52 +27,48 @@ def block_variables(r, c, d) -> list[int]:
     ]
 
 
-def at_least_one(vars) -> list[int]:
-    return [vars]
-
-
-def at_most_one(vars) -> list[int]:
-    return [[-u, -v] for u, v in combinations(vars, 2)]
-
-
-def exactly_one(vars) -> list[int]:
-    return at_least_one(vars) + at_most_one(vars)
-
-
-def encode_cell_constraints() -> list[int]:
+def encode_cell_constraints(method: str = "pairwise", top_id: int = 729):
     clauses = []
+    curr_top = top_id
     for r in range(9):
         for c in range(9):
-            clauses += exactly_one(cell_variables(r, c))
-    return clauses
+            cls, curr_top = exactly_one(cell_variables(r, c), method=method, top_id=curr_top)
+            clauses += cls
+    return clauses, curr_top
 
 
-def encode_block_constraints() -> list[int]:
+def encode_block_constraints(method: str = "pairwise", top_id: int = 729):
     clauses = []
+    curr_top = top_id
     for r in range(3):
         for c in range(3):
             for d in range(1, 10):
-                clauses += exactly_one(block_variables(r, c, d))
-    return clauses
+                cls, curr_top = exactly_one(block_variables(r, c, d), method=method, top_id=curr_top)
+                clauses += cls
+    return clauses, curr_top
 
 
-def encode_row_constraints() -> list[int]:
+def encode_row_constraints(method: str = "pairwise", top_id: int = 729):
     clauses = []
+    curr_top = top_id
     for r in range(9):
         for d in range(1, 10):
-            clauses += exactly_one(row_variables(r, d))
-    return clauses
+            cls, curr_top = exactly_one(row_variables(r, d), method=method, top_id=curr_top)
+            clauses += cls
+    return clauses, curr_top
 
 
-def encode_column_constraints() -> list[int]:
+def encode_column_constraints(method: str = "pairwise", top_id: int = 729):
     clauses = []
+    curr_top = top_id
     for c in range(9):
         for d in range(1, 10):
-            clauses += exactly_one(column_variables(c, d))
-    return clauses
+            cls, curr_top = exactly_one(column_variables(c, d), method=method, top_id=curr_top)
+            clauses += cls
+    return clauses, curr_top
 
 
-def encode_clues(grid) -> list[int]:
+def encode_clues(grid) -> list[list[int]]:
     clauses = []
     for r in range(9):
         for c in range(9):
@@ -82,18 +78,25 @@ def encode_clues(grid) -> list[int]:
     return clauses
 
 
-def encode_sudoku(grid) -> list[int]:
+def encode_sudoku(grid, method: str = "pairwise") -> list[list[int]]:
     clauses = []
-    clauses += encode_row_constraints()
-    clauses += encode_column_constraints()
-    clauses += encode_block_constraints()
-    clauses += encode_cell_constraints()
+    top_id = 729  # 81 ô x 9 chữ số = 729 biến nguyên bản của Sudoku
+
+    row_cls, top_id = encode_row_constraints(method=method, top_id=top_id)
+    col_cls, top_id = encode_column_constraints(method=method, top_id=top_id)
+    blk_cls, top_id = encode_block_constraints(method=method, top_id=top_id)
+    cel_cls, top_id = encode_cell_constraints(method=method, top_id=top_id)
+
+    clauses += row_cls
+    clauses += col_cls
+    clauses += blk_cls
+    clauses += cel_cls
     clauses += encode_clues(grid)
     return clauses
 
 
-def sudoku_solve(grid):
-    clauses = encode_sudoku(grid)
+def sudoku_solve(grid, method: str = "pairwise"):
+    clauses = encode_sudoku(grid, method=method)
     solver = Glucose3()
     for clause in clauses:
         solver.add_clause(clause)
@@ -108,7 +111,9 @@ def decode_model(model):
         return None
     grid = [[0 for _ in range(9)] for _ in range(9)]
     for x in model:
-        if x > 0:
+        # Chỉ lấy các biến Sudoku ban đầu (1 đến 729)
+        # Các biến phụ sinh ra cho AMO (id > 729) được bỏ qua
+        if 1 <= x <= 729:
             x -= 1
             r = x // 81
             rem = x % 81
@@ -119,9 +124,11 @@ def decode_model(model):
 
 
 if __name__ == "__main__":
-    model = sudoku_solve(DEFAULT_GRID)
-    if model:
-        solution = decode_model(model)
-        print_grid(solution, "GIAI SUDOKU BANG SAT (Glucose3)")
-    else:
-        print("Khong tim thay nghiem.")
+    for method in ["pairwise", "binary", "commander", "product", "seqcounter"]:
+        print(f"\n--- Testing SAT method: {method.upper()} ---")
+        model = sudoku_solve(DEFAULT_GRID, method=method)
+        if model:
+            solution = decode_model(model)
+            print_grid(solution, f"GIAI SUDOKU BANG SAT ({method})")
+        else:
+            print("Khong tim thay nghiem.")
