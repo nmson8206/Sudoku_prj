@@ -6,6 +6,7 @@ Script đo lường và so sánh hiệu năng của tất cả các Solver giả
 - CPLEX CP (IBM CP Optimizer)
 - Gurobi (MIP)
 - CPLEX MIP (IBM CPLEX)
+Hỗ trợ đo lường trên các kích thước ma trận khác nhau.
 """
 
 import sys
@@ -13,6 +14,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 import time
+from typing import List, Optional
 from utils import DEFAULT_GRID
 from solvers import (
     solve_sudoku_sat,
@@ -24,7 +26,11 @@ from solvers import (
 )
 
 
-def run_benchmark():
+def run_benchmark(grid: Optional[List[List[int]]] = None):
+    if grid is None:
+        grid = DEFAULT_GRID
+
+    N = len(grid)
     solvers = [
         # Nhánh SAT (Glucose3) với đầy đủ 5 kỹ thuật mã hóa Cardinality (AMO)
         ("SAT (Glucose3 - Pairwise)", lambda g: solve_sudoku_sat(g, method="pairwise")),
@@ -44,13 +50,15 @@ def run_benchmark():
     ]
 
     print("=" * 76)
+    print(f"BENCHMARK CÁC SOLVER CHO SUDOKU ({N}x{N})")
+    print("=" * 76)
     print(f"{'SOLVER':<35} | {'STATUS':<14} | {'THỜI GIAN (ms)':<18}")
     print("=" * 76)
 
     for name, func in solvers:
         try:
             t0 = time.perf_counter()
-            res = func(DEFAULT_GRID)
+            res = func(grid)
             elapsed_ms = (time.perf_counter() - t0) * 1000
             status = "Thành công" if res else "Thất bại"
             print(f"{name:<35} | {status:<14} | {elapsed_ms:>13.2f} ms")

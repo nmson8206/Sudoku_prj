@@ -1,6 +1,6 @@
 # Sudoku Solver & SAT Cardinality Encodings (AMO / ALO Framework)
 
-Dự án triển khai và benchmark các thuật toán giải Sudoku 9x9 với trọng tâm là **các kỹ thuật mã hóa SAT cho ràng buộc số lượng (Cardinality Constraints: At-Most-One - AMO, At-Least-One - ALO, Exactly-One - EO)**, đồng thời so sánh hiệu năng với các phương pháp giải tối ưu khác như Constraint Programming (CP) và Integer Linear Programming (ILP/MIP).
+Dự án triển khai và benchmark các thuật toán giải Sudoku tổng quát $N \times N$ (4x4, 9x9, 16x16,...) với trọng tâm là **các kỹ thuật mã hóa SAT cho ràng buộc số lượng (Cardinality Constraints: At-Most-One - AMO, At-Least-One - ALO, Exactly-One - EO)**, đồng thời so sánh hiệu năng với các phương pháp giải tối ưu khác như Constraint Programming (CP) và Integer Linear Programming (ILP/MIP).
 
 ---
 
@@ -8,7 +8,7 @@ Dự án triển khai và benchmark các thuật toán giải Sudoku 9x9 với t
 
 ```text
 Sudoku_prj/
-├── sat_encodings/               # Các phương pháp mã hóa SAT cho ALO, AMO, EO
+├── sat_encodings/               # Các phương pháp mã hóa SAT cho ALO, AMO, EO (generic cho mọi n)
 │   ├── __init__.py              # Public API
 │   ├── alo.py                   # At-Least-One: (x1 v x2 v ... v xn)
 │   ├── pairwise.py              # Pairwise AMO (Naive O(n^2))
@@ -18,7 +18,7 @@ Sudoku_prj/
 │   ├── seqcounter.py            # Sequential Counter AMO qua PySAT (Sinz, 2005)
 │   └── manager.py               # Bộ điều phối (Dispatcher: at_most_one, exactly_one)
 │
-├── solvers/                     # Các bộ giải Sudoku đa phương pháp
+├── solvers/                     # Các bộ giải Sudoku đa phương pháp (Hỗ trợ tổng quát NxN)
 │   ├── __init__.py              # Public solver API
 │   ├── sat_solver.py            # SAT Solver (Glucose3) hỗ trợ chuyển đổi đa dạng encodings
 │   ├── cpsat_solver.py          # Google OR-Tools CP-SAT Solver
@@ -35,10 +35,10 @@ Sudoku_prj/
 ├── tests/                       # Hệ thống kiểm thử tự động
 │   ├── __init__.py
 │   ├── test_encodings.py        # Kiểm thử tính đúng đắn chân trị (Soundness & Completeness)
-│   └── test_solvers.py          # Kiểm thử tích hợp kiểm tra nghiệm các solver
+│   └── test_solvers.py          # Kiểm thử tích hợp kiểm tra nghiệm các solver trên 4x4, 9x9, 16x16
 │
-├── utils.py                     # Đề bài mẫu (DEFAULT_GRID) & hiển thị bảng Sudoku
-├── main.py                      # Điểm vào dòng lệnh (CLI Application)
+├── utils.py                     # Đề bài mẫu (4x4, 9x9, 16x16) & hiển thị bảng Sudoku NxN
+├── main.py                      # Điểm vào dòng lệnh (CLI Application hỗ trợ --size)
 ├── requirements.txt             # Danh sách thư viện phụ thuộc
 └── README.md                    # Tài liệu hướng dẫn
 ```
@@ -66,20 +66,22 @@ pip install -r requirements.txt
 
 ### 3.2. Chạy ứng dụng qua CLI (`main.py`)
 ```bash
-# 1. Giải Sudoku với phương pháp SAT chỉ định:
+# 1. Giải Sudoku chuẩn 9x9:
 python main.py --solve product
-python main.py --solve commander
-python main.py --solve seqcounter
-python main.py --solve binary
-python main.py --solve pairwise
 
-# 2. Chạy benchmark so sánh 5 phương pháp mã hóa SAT:
+# 2. Giải Sudoku với kích thước khác (4x4 hoặc 16x16):
+python main.py --size 4 --solve product
+python main.py --size 16 --solve product
+
+# 3. Chạy benchmark so sánh 5 phương pháp mã hóa SAT:
 python main.py --benchmark-sat
+python main.py --size 16 --benchmark-sat
 
-# 3. Chạy benchmark so sánh tất cả các Solver (SAT, CP-SAT, ILP, CPLEX, Gurobi):
+# 4. Chạy benchmark so sánh tất cả các Solver:
 python main.py --benchmark-all
+python main.py --size 16 --benchmark-all
 
-# 4. Chạy toàn bộ hệ thống Unit Tests:
+# 5. Chạy toàn bộ hệ thống Unit Tests & Integration Tests (4x4, 9x9, 16x16):
 python main.py --test
 ```
 
@@ -87,10 +89,10 @@ python main.py --test
 ```python
 from sat_encodings import exactly_one, amo_commander, amo_product
 from solvers import solve_sudoku_sat
+from utils import print_grid
 
-# Sinh mệnh đề AMO cho danh sách biến:
-clauses, top_id = amo_commander(lits=[1, 2, 3, 4, 5, 6, 7, 8, 9], top_id=9)
-
-# Giải Sudoku bằng SAT với phương pháp mã hóa tùy chọn:
+# Giải Sudoku bất kỳ (4x4, 9x9, 16x16,...) bằng SAT:
 grid_solution = solve_sudoku_sat(grid=my_sudoku_grid, method="product")
+if grid_solution:
+    print_grid(grid_solution, "KET QUA")
 ```
