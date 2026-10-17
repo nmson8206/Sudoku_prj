@@ -1,0 +1,36 @@
+﻿puzzle_id,difficulty,solver_name,time_ms,is_valid
+norvig_top95_0001,expert,SAT (Glucose3 - Product),55.208,True
+norvig_top95_0001,expert,SAT (Glucose3 - Pairwise),67.953,True
+norvig_top95_0001,expert,CP-SAT (Google OR-Tools),457.934,True
+norvig_top95_0001,expert,ILP (PuLP / CBC),10513.981,True
+norvig_top95_0001,expert,Gurobi (MIP),259.92,True
+norvig_top95_0001,expert,CPLEX CP (IBM CPO),1092.06,True
+norvig_top95_0001,expert,CPLEX MIP (IBM MP),586.13,True
+norvig_top95_0002,expert,SAT (Glucose3 - Product),38.127,True
+norvig_top95_0002,expert,SAT (Glucose3 - Pairwise),46.287,True
+norvig_top95_0002,expert,CP-SAT (Google OR-Tools),63.994,True
+norvig_top95_0002,expert,ILP (PuLP / CBC),333.83,True
+norvig_top95_0002,expert,Gurobi (MIP),74.672,True
+norvig_top95_0002,expert,CPLEX CP (IBM CPO),351.303,True
+norvig_top95_0002,expert,CPLEX MIP (IBM MP),144.92,True
+norvig_top95_0003,expert,SAT (Glucose3 - Product),40.95,True
+norvig_top95_0003,expert,SAT (Glucose3 - Pairwise),53.646,True
+norvig_top95_0003,expert,CP-SAT (Google OR-Tools),71.41,True
+norvig_top95_0003,expert,ILP (PuLP / CBC),669.713,True
+norvig_top95_0003,expert,Gurobi (MIP),121.849,True
+norvig_top95_0003,expert,CPLEX CP (IBM CPO),566.626,True
+norvig_top95_0003,expert,CPLEX MIP (IBM MP),181.139,True
+norvig_top95_0004,expert,SAT (Glucose3 - Product),73.839,True
+norvig_top95_0004,expert,SAT (Glucose3 - Pairwise),62.958,True
+norvig_top95_0004,expert,CP-SAT (Google OR-Tools),104.578,True
+norvig_top95_0004,expert,ILP (PuLP / CBC),570.811,True
+norvig_top95_0004,expert,Gurobi (MIP),140.7,True
+norvig_top95_0004,expert,CPLEX CP (IBM CPO),380.367,True
+norvig_top95_0004,expert,CPLEX MIP (IBM MP),192.737,True
+norvig_top95_0005,expert,SAT (Glucose3 - Product),42.744,True
+norvig_top95_0005,expert,SAT (Glucose3 - Pairwise),62.305,True
+norvig_top95_0005,expert,CP-SAT (Google OR-Tools),105.806,True
+norvig_top95_0005,expert,ILP (PuLP / CBC),424.321,True
+norvig_top95_0005,expert,Gurobi (MIP),97.312,True
+norvig_top95_0005,expert,CPLEX CP (IBM CPO),300.957,True
+norvig_top95_0005,expert,CPLEX MIP (IBM MP),128.342,True

@@ -1,0 +1,51 @@
+﻿puzzle_id,difficulty,method_key,method_name,num_vars,num_clauses,encode_ms,solve_ms,total_ms,is_valid
+norvig_top95_0001,expert,pairwise,Pairwise (Naive),729,12005,9.918,1.614,11.532,True
+norvig_top95_0001,expert,binary,Binary (PySAT Bitwise),2025,12005,32.318,2.635,34.953,True
+norvig_top95_0001,expert,commander,Commander Encoding,1701,8117,7.492,1.829,9.321,True
+norvig_top95_0001,expert,product,Product Encoding (Chen),2673,8117,97.055,1.927,98.982,True
+norvig_top95_0001,expert,seqcounter,Sequential Counter (PySAT),3321,7793,27.207,2.118,29.325,True
+norvig_top95_0002,expert,pairwise,Pairwise (Naive),729,12005,6.557,2.023,8.579,True
+norvig_top95_0002,expert,binary,Binary (PySAT Bitwise),2025,12005,31.601,2.816,34.417,True
+norvig_top95_0002,expert,commander,Commander Encoding,1701,8117,13.589,2.248,15.837,True
+norvig_top95_0002,expert,product,Product Encoding (Chen),2673,8117,16.271,2.827,19.099,True
+norvig_top95_0002,expert,seqcounter,Sequential Counter (PySAT),3321,7793,40.27,2.86,43.13,True
+norvig_top95_0003,expert,pairwise,Pairwise (Naive),729,12005,21.706,3.074,24.78,True
+norvig_top95_0003,expert,binary,Binary (PySAT Bitwise),2025,12005,25.654,3.562,29.216,True
+norvig_top95_0003,expert,commander,Commander Encoding,1701,8117,23.368,2.608,25.977,True
+norvig_top95_0003,expert,product,Product Encoding (Chen),2673,8117,15.792,4.206,19.997,True
+norvig_top95_0003,expert,seqcounter,Sequential Counter (PySAT),3321,7793,21.978,2.187,24.165,True
+norvig_top95_0004,expert,pairwise,Pairwise (Naive),729,12005,14.533,2.999,17.533,True
+norvig_top95_0004,expert,binary,Binary (PySAT Bitwise),2025,12005,33.642,4.676,38.318,True
+norvig_top95_0004,expert,commander,Commander Encoding,1701,8117,17.068,4.559,21.627,True
+norvig_top95_0004,expert,product,Product Encoding (Chen),2673,8117,17.295,1.962,19.257,True
+norvig_top95_0004,expert,seqcounter,Sequential Counter (PySAT),3321,7793,12.238,2.248,14.486,True
+norvig_top95_0005,expert,pairwise,Pairwise (Naive),729,12005,6.601,2.082,8.683,True
+norvig_top95_0005,expert,binary,Binary (PySAT Bitwise),2025,12005,58.182,4.649,62.831,True
+norvig_top95_0005,expert,commander,Commander Encoding,1701,8117,40.875,3.017,43.892,True
+norvig_top95_0005,expert,product,Product Encoding (Chen),2673,8117,88.604,2.267,90.871,True
+norvig_top95_0005,expert,seqcounter,Sequential Counter (PySAT),3321,7793,39.131,1.903,41.034,True
+norvig_top95_0006,expert,pairwise,Pairwise (Naive),729,12005,10.148,2.321,12.469,True
+norvig_top95_0006,expert,binary,Binary (PySAT Bitwise),2025,12005,73.736,2.066,75.803,True
+norvig_top95_0006,expert,commander,Commander Encoding,1701,8117,18.343,2.047,20.39,True
+norvig_top95_0006,expert,product,Product Encoding (Chen),2673,8117,14.856,12.541,27.397,True
+norvig_top95_0006,expert,seqcounter,Sequential Counter (PySAT),3321,7793,87.315,1.933,89.248,True
+norvig_top95_0007,expert,pairwise,Pairwise (Naive),729,12005,14.699,2.633,17.332,True
+norvig_top95_0007,expert,binary,Binary (PySAT Bitwise),2025,12005,39.362,3.113,42.475,True
+norvig_top95_0007,expert,commander,Commander Encoding,1701,8117,18.062,2.527,20.588,True
+norvig_top95_0007,expert,product,Product Encoding (Chen),2673,8117,12.568,2.264,14.833,True
+norvig_top95_0007,expert,seqcounter,Sequential Counter (PySAT),3321,7793,15.129,1.525,16.653,True
+norvig_top95_0008,expert,pairwise,Pairwise (Naive),729,12005,149.325,4.837,154.162,True
+norvig_top95_0008,expert,binary,Binary (PySAT Bitwise),2025,12005,24.081,2.304,26.384,True
+norvig_top95_0008,expert,commander,Commander Encoding,1701,8117,8.529,3.541,12.07,True
+norvig_top95_0008,expert,product,Product Encoding (Chen),2673,8117,9.225,1.328,10.553,True
+norvig_top95_0008,expert,seqcounter,Sequential Counter (PySAT),3321,7793,20.205,3.648,23.852,True
+norvig_top95_0009,expert,pairwise,Pairwise (Naive),729,12005,10.553,2.049,12.601,True
+norvig_top95_0009,expert,binary,Binary (PySAT Bitwise),2025,12005,31.125,4.896,36.021,True
+norvig_top95_0009,expert,commander,Commander Encoding,1701,8117,10.897,4.387,15.284,True
+norvig_top95_0009,expert,product,Product Encoding (Chen),2673,8117,15.461,2.455,17.916,True
+norvig_top95_0009,expert,seqcounter,Sequential Counter (PySAT),3321,7793,27.855,1.995,29.85,True
+norvig_top95_0010,expert,pairwise,Pairwise (Naive),729,12005,15.451,2.266,17.716,True
+norvig_top95_0010,expert,binary,Binary (PySAT Bitwise),2025,12005,19.199,2.731,21.93,True
+norvig_top95_0010,expert,commander,Commander Encoding,1701,8117,10.962,4.519,15.48,True
+norvig_top95_0010,expert,product,Product Encoding (Chen),2673,8117,12.503,3.286,15.789,True
+norvig_top95_0010,expert,seqcounter,Sequential Counter (PySAT),3321,7793,29.637,3.787,33.424,True
