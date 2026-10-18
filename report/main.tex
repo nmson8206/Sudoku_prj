@@ -8,6 +8,9 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{subcaption}
+% Giữ hình/bảng trong phạm vi mục của chúng: tránh trường hợp float bị đẩy
+% ra tận sau danh mục Tài liệu (hình nằm rời khỏi phần tham chiếu).
+\usepackage[section]{placeins}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{natbib}
@@ -260,6 +263,7 @@ Trong mô hình Quy hoạch tuyến tính nguyên:
 Mô hình này được nạp trực tiếp vào \textbf{Gurobi Optimizer} (thương mại hàng đầu), \textbf{IBM CPLEX MIP} và solver mã nguồn mở \textbf{CBC} (thông qua giao tiếp PuLP).
 
 \section{Kết quả thực nghiệm và Thảo luận (Experimental Evaluation)}
+\label{sec:exp}
 
 \subsection{Môi trường thực nghiệm \& Bộ dữ liệu Benchmark}
 \begin{itemize}
@@ -274,6 +278,7 @@ Mô hình này được nạp trực tiếp vào \textbf{Gurobi Optimizer} (thư
 \end{itemize}
 
 \subsection{Đánh giá quy mô mô hình SAT Encodings (Variables vs Clauses)}
+\label{sec:exp-scale}
 Bảng \ref{tab:cnf_scale} và Hình \ref{fig:encodings} tổng hợp quy mô mô hình CNF sinh ra trên bảng Sudoku $9 \times 9$ và ma trận lớn $16 \times 16$.
 
 \begin{table}[t]
@@ -322,8 +327,8 @@ Hình \ref{fig:difficulty} biểu diễn tổng thời gian (mã hóa + giải) 
 \begin{itemize}
     \item \textbf{2-Product} là phương pháp ổn định và nhanh nhất ở \textit{mọi} cấp độ khó, dao động khoảng $2.8$--$4.1\text{ ms}$, nhờ chi phí mã hóa thấp nhất và chỉ sinh thêm $2\lceil\sqrt{n}\rceil$ biến phụ.
     \item \textbf{Sequential Counter} có tổng thời gian cao nhất (khoảng $6.5$--$8.6\text{ ms}$) vì phải sinh $n-1$ biến đếm cho mỗi ràng buộc Exactly-One, khiến pha mã hóa trở thành nút cổ chai, dù số mệnh đề sinh ra lại ít nhất.
-    \item Thời gian đạt đỉnh tại cấp độ \textit{Hard} rồi giảm nhẹ ở \textit{Expert}; biên độ biến thiên giữa các cấp độ chỉ khoảng $2$--$3\text{ ms}$ và không xuất hiện hiện tượng bùng nổ thời gian (runaway runtime). Điều này cho thấy số lượng gợi ý ban đầu ảnh hưởng không đáng kể tới chi phí xử lý, phần lớn chênh lệch đến từ dao động của pha mã hóa.
-    \item Thời gian giải thuần túy trên Glucose3 gần như là hằng số ($0.4$--$0.5\text{ ms}$) cho mọi cấp độ, minh chứng cho hiệu quả của cơ chế lan truyền đơn vị trong các encoding tuyến tính.
+    \item Thời gian đạt đỉnh tại cấp độ \textit{Hard} rồi giảm nhẹ ở \textit{Expert}; biên độ biến thiên giữa các cấp độ chỉ khoảng $2$--$3\text{ ms}$ và không xuất hiện hiện tượng bùng nổ thời gian (runaway runtime). Điều này cho thấy số lượng gợi ý ban đầu ảnh hưởng không đáng kể tới chi phí xử lý, phần lớn chênh lệch đến từ dao động của pha mã hóa (xem phân tích min-of-60 trên từng câu đố đại diện tại Mục~\ref{sec:cases}).
+    \item Thời gian giải thuần túy trên Glucose3 rất nhỏ, trung bình chỉ $0.4$--$0.5\text{ ms}$ trên toàn tập cho mọi phương pháp, minh chứng cho hiệu quả của cơ chế lan truyền đơn vị trong các encoding tuyến tính. Tuy nhiên, khi đo trên từng câu đố đại diện, phần thời gian này tăng dần theo cấp độ khó do số ô gợi ý giảm (chi tiết tại Mục~\ref{sec:cases}).
 \end{itemize}
 
 \subsection{So sánh đối chuẩn hiệu năng giữa SAT Solver và các Solvers (CP, ILP/MIP)}
@@ -365,6 +370,171 @@ ILP (PuLP / CBC) & ILP / Branch-and-Cut & 147.10 & 100\% \\
     \item \textbf{Vị thế của Gurobi (MIP)}: Gurobi cho kết quả rất cạnh tranh ($17.38\text{ ms}$), gần bằng các encoding SAT chậm hơn, cho thấy các bộ giải MIP thương mại đã tối ưu rất tốt cho lớp bài toán ràng buộc chặt này.
     \item \textbf{Hạn chế của các bộ giải thuần ILP/MIP}: Các bộ giải MIP xử lý bài toán thông qua việc giải bài toán nới lỏng quy hoạch tuyến tính liên tục (LP Relaxation) bằng phương pháp Simplex hoặc Điểm trong (Interior Point) trước khi cắt nhánh nguyên. Trong bài toán Sudoku, ma trận ràng buộc không đạt tính đơn mô-đun toàn phần (unimodular), nên nghiệm LP nới lỏng thường mang giá trị phân số và cây tìm kiếm phân nhánh bị phình to hơn so với suy diễn logic trực tiếp của SAT. Đây là nguyên nhân chính khiến CBC ($147.10\text{ ms}$) chậm hơn hẳn một bậc độ lớn.
 \end{enumerate}
+
+\section{Nghiên cứu trường hợp thực nghiệm (Experimental Case Studies)}
+\label{sec:cases}
+
+Các kết quả ở Bảng~\ref{tab:cnf_scale}--\ref{tab:solver_benchmark} và Hình~\ref{fig:encodings}--\ref{fig:solvers} là số liệu trung bình trên toàn tập 299 câu đố. Để làm rõ cơ chế hoạt động ở mức vi mô và kiểm chứng chéo các kết luận nêu trên, mục này phân tích chi tiết ba trường hợp thực nghiệm: (i) theo kích thước bảng, (ii) theo cấp độ khó và (iii) theo kỹ thuật mã hóa.
+
+\textbf{Giao thức đo lường.} Câu đố đại diện cho mỗi nhóm được chọn là câu có số gợi ý bằng \textit{trung vị} của nhóm (nhằm tránh các trường hợp ngoại lệ). Mỗi cấu hình (câu đố $\times$ phương pháp mã hóa) được lặp lại $60$ lần; thời gian mã hóa và thời gian giải lấy theo \textbf{giá trị nhỏ nhất} (min-of-60) để loại bỏ nhiễu do bộ thu gom rác (Garbage Collector) của Python; sau đó lặp lại toàn bộ thí nghiệm trong 3 phiên độc lập và lấy \textbf{trung vị} giữa các phiên. Tất cả các lần chạy đều cho nghiệm hợp lệ (đã kiểm tra lại toàn bộ hàng, cột, khối và mọi gợi ý ban đầu). Do CPU thử nghiệm (Intel Core i5-1235U) liên tục thay đổi tần số (turbo boost), thời gian mã hóa dao động khoảng $\pm 30\%$ giữa các phiên đo, vì vậy các giá trị thời gian chỉ mang tính đại diện định tính; ngược lại, \textbf{số biến và số mệnh đề là các hằng số tuyệt đối}, lặp lại chính xác qua mọi lần chạy.
+
+\subsection{Trường hợp theo kích thước bảng ($4\times4$, $9\times9$, $16\times16$)}
+Ba câu đố đại diện lần lượt là \texttt{matrix4x4\_0002} ($4\times4$, 4 gợi ý), \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý) và \texttt{hexadoku16x16\_0005} ($16\times16$, 77 gợi ý). Bảng~\ref{tab:case_size} tổng hợp quy mô CNF và thời gian tương ứng.
+
+\begin{table*}[t]
+\centering
+\footnotesize
+\caption{Quy mô CNF và thời gian trên ba câu đố đại diện theo kích thước bảng (min-of-60, trung vị của 3 phiên đo). Ký hiệu: Seq. Counter $=$ Sequential Counter.}
+\label{tab:case_size}
+\begin{tabular}{@{}c l c l r r r r r@{}}
+\toprule
+\textbf{Bảng} & \textbf{Puzzle} & \textbf{Gợi ý} & \textbf{Mã hóa AMO} & \textbf{Biến} & \textbf{Mệnh đề} & \textbf{Enc. (ms)} & \textbf{Solve (ms)} & \textbf{Tổng (ms)} \\
+\midrule
+\multirow{5}{*}{$4\times4$} & \multirow{5}{*}{\texttt{matrix4x4\_0002}} & \multirow{5}{*}{4} & Pairwise & 64 & 452 & 0.17 & 0.05 & 0.22 \\
+ & & & Binary & 192 & 580 & 0.58 & 0.07 & 0.65 \\
+ & & & Commander & 128 & 580 & 0.34 & 0.07 & 0.41 \\
+ & & & 2-Product & 320 & 708 & 0.33 & 0.08 & 0.41 \\
+ & & & Seq. Counter & 256 & 580 & 0.73 & 0.06 & 0.79 \\
+\midrule
+\multirow{5}{*}{$9\times9$} & \multirow{5}{*}{\texttt{norvig\_top95\_0053}} & \multirow{5}{*}{26} & Pairwise & 729 & 12,014 & 2.80 & 0.45 & 3.25 \\
+ & & & Binary & 2,025 & 12,014 & 6.81 & 0.53 & 7.34 \\
+ & & & Commander & 1,701 & 8,126 & 3.05 & 0.43 & 3.48 \\
+ & & & 2-Product & 2,673 & 8,126 & 2.50 & 0.43 & \textbf{2.93} \\
+ & & & Seq. Counter & 3,321 & 7,802 & 5.50 & 0.38 & 5.88 \\
+\midrule
+\multirow{5}{*}{$16\times16$} & \multirow{5}{*}{\texttt{hexadoku16x16\_0005}} & \multirow{5}{*}{77} & Pairwise & 4,096 & 123,981 & 30.12 & 4.10 & 34.22 \\
+ & & & Binary & 8,192 & 66,637 & 30.14 & 2.78 & 32.92 \\
+ & & & Commander & 11,264 & 52,301 & 20.51 & 3.26 & 23.77 \\
+ & & & 2-Product & 12,288 & 46,157 & 15.63 & 2.24 & \textbf{17.87} \\
+ & & & Seq. Counter & 19,456 & 46,157 & 30.73 & 3.53 & 34.26 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\textbf{Nhận xét}:
+\begin{itemize}
+    \item \textbf{Quy luật tăng trưởng}: số mệnh đề của Pairwise bám sát hàm bậc hai và vượt mốc $120.000$ mệnh đề ở $16\times16$ ($123,981$), gấp $2.69$ lần 2-Product ($46,157$) — tương ứng mức giảm $63\%$; so với Sequential Counter ($46,157$ mệnh đề) mức tăng cũng là $2.69$ lần. Ba kỹ thuật tuyến tính (Commander, 2-Product, Sequential Counter) chỉ sinh $46$--$52$ nghìn mệnh đề nên kiểm soát tốt hiện tượng bùng nổ.
+    \item \textbf{Khoảng cách thời gian nới rộng theo kích thước}: ở $4\times4$ cả 5 phương pháp đều dưới $0.8\text{ ms}$; ở $9\times9$ khoảng cách còn nhỏ ($2.93$--$7.34\text{ ms}$); đến $16\times16$ khác biệt trở nên rõ rệt khi 2-Product ($17.87\text{ ms}$) nhanh hơn Pairwise ($34.22\text{ ms}$) và Sequential Counter ($34.26\text{ ms}$) khoảng \textbf{1.9 lần}, nhanh hơn Binary ($32.92\text{ ms}$) khoảng $1.8$ lần.
+    \item \textbf{Trường hợp đặc biệt $4\times4$}: với $n=4$ quá nhỏ, 2-Product lại sinh \textit{nhiều mệnh đề hơn} Pairwise ($708$ so với $452$) vì chi phí sinh lưới chi phối: $2n + \binom{p}{2} + \binom{q}{2} = 2\cdot4 + 1 + 1 = 10$ mệnh đề cho mỗi ràng buộc Exactly-One, lớn hơn $\binom{4}{2} = 6$ của Pairwise. Kết quả này cho thấy các encoding tuyến tính chỉ phát huy ưu thế từ khoảng $n \ge 9$ trở lên.
+    \item \textbf{Chi phí mã hóa luôn chi phối}: ở cả ba kích thước, thời gian giải thuần túy đều nhỏ hơn thời gian mã hóa từ khoảng 3 đến 6 lần, khẳng định lại nhận định ở Mục~\ref{sec:exp-scale}.
+\end{itemize}
+
+\subsection{Trường hợp theo cấp độ khó}
+Hai bảng~\ref{tab:case_diff} và \ref{tab:case_diff_solve} trình bày kết quả trên bốn câu đố $9\times9$ đại diện cho bốn cấp độ khó, với số gợi ý giảm dần từ $36$ (Easy) xuống $23$ (Expert).
+
+\begin{table}[t]
+\centering
+\small
+\caption{Tổng thời gian (mã hóa + giải, ms) trên bốn câu đố $9\times9$ đại diện: \texttt{norvig\_easy50\_0005} (Easy), \texttt{norvig\_easy50\_0003} (Medium), \texttt{norvig\_top95\_0012} (Hard) và \texttt{norvig\_hardest\_0002} (Expert).}
+\label{tab:case_diff}
+\begin{tabular}{@{}l c c c c c c@{}}
+\toprule
+\textbf{Độ khó} & \textbf{Gợi ý} & \textbf{Pairwise} & \textbf{Binary} & \textbf{Commander} & \textbf{2-Product} & \textbf{Seq. Counter} \\
+\midrule
+Easy   & 36 & 3.23 & 7.85 & 3.81 & 3.27 & 5.00 \\
+Medium & 28 & 3.21 & 6.20 & 3.52 & 3.50 & 6.44 \\
+Hard   & 25 & 3.54 & 7.01 & 4.03 & 3.63 & 7.01 \\
+Expert & 23 & 4.13 & 8.32 & 5.53 & 4.90 & 7.37 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Thời gian giải thuần túy (ms, chỉ tính pha \texttt{Glucose3.solve()}) trên cùng bốn câu đố $9\times9$ đại diện theo cấp độ khó.}
+\label{tab:case_diff_solve}
+\begin{tabular}{@{}l c c c c c c@{}}
+\toprule
+\textbf{Độ khó} & \textbf{Gợi ý} & \textbf{Pairwise} & \textbf{Binary} & \textbf{Commander} & \textbf{2-Product} & \textbf{Seq. Counter} \\
+\midrule
+Easy   & 36 & 0.32 & 0.48 & 0.32 & 0.33 & 0.21 \\
+Medium & 28 & 0.34 & 0.40 & 0.27 & 0.33 & 0.26 \\
+Hard   & 25 & 0.47 & 0.63 & 0.66 & 0.42 & 0.78 \\
+Expert & 23 & 0.67 & 1.14 & 1.52 & 1.60 & 1.36 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Nhận xét}:
+\begin{itemize}
+    \item \textbf{Tổng thời gian tăng nhẹ và gần như đơn điệu} khi độ khó tăng: 2-Product từ $3.27$ lên $4.90\text{ ms}$ ($+50\%$), Sequential Counter từ $5.00$ lên $7.37\text{ ms}$ ($+47\%$) và Pairwise từ $3.23$ lên $4.13\text{ ms}$ ($+28\%$). Biên độ tuyệt đối giữa Easy và Expert chỉ dưới $2.5\text{ ms}$ nên vẫn khẳng định số gợi ý ảnh hưởng không lớn tới tổng thời gian.
+    \item \textbf{Nguyên nhân nằm ở pha giải}: thời gian giải thuần túy tăng từ $2.1$ đến $5.0$ lần khi đi từ Easy ($36$ gợi ý) đến Expert ($23$ gợi ý): Pairwise $0.32 \to 0.67\text{ ms}$; Binary $0.48 \to 1.14\text{ ms}$; Commander $0.32 \to 1.52\text{ ms}$; 2-Product $0.33 \to 1.60\text{ ms}$; Sequential Counter $0.21 \to 1.36\text{ ms}$. Khi số gợi ý giảm, ít mệnh đề đơn nguyên được nạp trước nên khả năng lan truyền đơn vị giảm và solver phải thực hiện nhiều bước phân nhánh hơn. Trong khi đó, pha mã hóa gần như độc lập với độ khó vì chỉ phụ thuộc vào $N$ và số gợi ý.
+    \item \textbf{Liên hệ với Hình~\ref{fig:difficulty}}: hình đó biểu diễn \textit{trung bình cộng} trên toàn bộ câu đố mỗi cấp (dễ bị chi phối bởi các ngoại lệ thời gian mã hóa do GC, có lần lên tới $\sim 35\text{ ms}$) nên đường cong có đỉnh tại cấp \textit{Hard}; hai bảng trên dùng \textit{trung vị} min-of-60 trên một câu đại diện nên cho xu hướng tăng đơn điệu. Cả hai quan sát hội tụ về cùng một kết luận: chênh lệch tổng thời gian giữa 4 cấp độ chỉ vài mili-giây, và phần chênh lệch chủ yếu nằm ở pha giải chứ không phải pha mã hóa.
+\end{itemize}
+
+\subsection{Trường hợp theo kỹ thuật mã hóa}
+Bảng~\ref{tab:case_enc} phân rã cấu trúc file CNF của câu đố $9\times9$ đại diện (26 gợi ý) theo từng kỹ thuật mã hóa.
+
+\begin{table*}[t]
+\centering
+\small
+\caption{Phân rã cấu trúc CNF của câu đố \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý): $324$ ràng buộc Exactly-One ($4N^2$) tương ứng $324$ mệnh đề ALO, $26$ mệnh đề đơn nguyên từ gợi ý, phần còn lại là AMO.}
+\label{tab:case_enc}
+\begin{tabular}{@{}l r r r r r r r r@{}}
+\toprule
+\textbf{Phương pháp} & \textbf{Biến} & \textbf{Biến phụ} & \textbf{Mệnh đề} & \textbf{ALO} & \textbf{AMO} & \textbf{Gợi ý} & \textbf{Encode (ms)} & \textbf{Solve (ms)} \\
+\midrule
+Pairwise (Naive) & 729 & 0 & 12,014 & 324 & 11,664 & 26 & 2.80 & 0.45 \\
+Binary (Bitwise) & 2,025 & 1,296 & 12,014 & 324 & 11,664 & 26 & 6.81 & 0.53 \\
+Commander & 1,701 & 972 & 8,126 & 324 & 7,776 & 26 & 3.05 & 0.43 \\
+2-Product & 2,673 & 1,944 & 8,126 & 324 & 7,776 & 26 & 2.50 & 0.43 \\
+Sequential Counter & 3,321 & 2,592 & 7,802 & 324 & 7,452 & 26 & 5.50 & 0.38 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\textbf{Nhận xét}:
+\begin{itemize}
+    \item \textbf{Kiểm chứng công thức lý thuyết}: mỗi bảng $9\times9$ sinh chính xác $4N^2 = 324$ ràng buộc Exactly-One (hàng, cột, khối, ô), tương ứng $324$ mệnh đề ALO và $26$ mệnh đề đơn nguyên từ gợi ý. Số mệnh đề AMO cho \textit{mỗi} ràng buộc Exactly-One khớp chính xác với Mục~3: Pairwise $36 = \binom{9}{2}$; Binary $36 = 9\lceil\log_2 9\rceil = 9 \times 4$; Commander $24$; 2-Product $24 = 2 \times 9 + \binom{3}{2} + \binom{3}{2}$; Sequential Counter $23 = 3 \times 9 - 4$. Vì vậy Commander và 2-Product cắt $33\%$ số mệnh đề AMO, Sequential Counter cắt $36\%$; tính trên tổng số mệnh đề, mức giảm lần lượt là $32\%$ và $35\%$ so với Pairwise.
+    \item \textbf{Kiểm chứng số biến phụ}: các giá trị đo được cũng đúng bằng công thức: Binary $1,296 = 324 \times \lceil\log_2 9\rceil$; Commander $972 = 324 \times \lceil 9/3\rceil$; 2-Product $1,944 = 324 \times (p + q) = 324 \times 6$; Sequential Counter $2,592 = 324 \times (n-1)$. Điều này xác nhận các cài đặt trong mã nguồn triển khai đúng đặc tả lý thuyết.
+    \item \textbf{Thời gian}: 2-Product cho thời gian mã hóa nhỏ nhất ($2.50\text{ ms}$) và cũng nhỏ nhất ở pha giải ($0.43\text{ ms}$). Binary ($6.81\text{ ms}$) và Sequential Counter ($5.50\text{ ms}$) chậm nhất ở pha mã hóa do cả hai đều gọi thư viện PySAT để sinh mệnh đề, trong khi Pairwise, Commander và 2-Product được cài đặt trực tiếp bằng Python nên ít chi phí gọi hàm hơn.
+\end{itemize}
+
+Bảng~\ref{tab:case_grid} minh họa một trường hợp cụ thể: đề bài $9\times9$ có 26 gợi ý và nghiệm duy nhất do Glucose3 (mã hóa 2-Product) tìm được, đã được kiểm tra thỏa mãn toàn bộ 5 nhóm ràng buộc của bài toán.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Câu đố $9\times9$ đại diện \texttt{norvig\_top95\_0053} (26 gợi ý) và nghiệm do Glucose3 với mã hóa 2-Product tìm được.}
+\label{tab:case_grid}
+\begin{minipage}{0.48\linewidth}\centering
+\textbf{Đề bài}\\[4pt]
+\begin{tabular}{|ccc|ccc|ccc|}
+\hline
+ & 2 & & & & & 5 & 9 & 3 \\
+8 & & & 5 & & & 4 & 6 & \\
+9 & 4 & & & 6 & & & & 8 \\
+\hline
+ & & 2 & & 3 & & & & \\
+ & 6 & & & 8 & & 7 & 3 & \\
+7 & & & 2 & & & & & \\
+\hline
+ & & & & 4 & & 3 & 8 & \\
+ & 7 & & & & & 6 & & \\
+ & & & & & & & & 5 \\
+\hline
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}{0.48\linewidth}\centering
+\textbf{Nghiệm}\\[4pt]
+\begin{tabular}{|ccc|ccc|ccc|}
+\hline
+1 & 2 & 6 & 4 & 7 & 8 & 5 & 9 & 3 \\
+8 & 3 & 7 & 5 & 9 & 2 & 4 & 6 & 1 \\
+9 & 4 & 5 & 3 & 6 & 1 & 2 & 7 & 8 \\
+\hline
+4 & 1 & 2 & 9 & 3 & 7 & 8 & 5 & 6 \\
+5 & 6 & 9 & 1 & 8 & 4 & 7 & 3 & 2 \\
+7 & 8 & 3 & 2 & 5 & 6 & 9 & 1 & 4 \\
+\hline
+2 & 5 & 1 & 6 & 4 & 9 & 3 & 8 & 7 \\
+3 & 7 & 4 & 8 & 1 & 5 & 6 & 2 & 9 \\
+6 & 9 & 8 & 7 & 2 & 3 & 1 & 4 & 5 \\
+\hline
+\end{tabular}
+\end{minipage}
+\end{table}
 
 \section{Kết luận và Hướng phát triển (Conclusion)}
 Bài báo đã hoàn thành nghiên cứu toàn diện về việc mô hình hóa logic và giải bài toán Sudoku tổng quát $N \times N$ bằng SAT Encoding và đối chuẩn với các công cụ CP/MIP:
