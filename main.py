@@ -101,6 +101,17 @@ def main():
         help="Tự động vẽ và lưu biểu đồ so sánh hiệu năng vào thư mục reports/"
     )
     parser.add_argument(
+        "--output-plot",
+        type=str,
+        default=None,
+        help="Đường dẫn hoặc tên file ảnh biểu đồ tùy chỉnh (ví dụ: reports/my_plot.png)"
+    )
+    parser.add_argument(
+        "--timestamp",
+        action="store_true",
+        help="Tự động thêm timestamp vào tên file ảnh/csv/json để không bao giờ bị ghi đè hay trùng tên"
+    )
+    parser.add_argument(
         "--output-csv",
         type=str,
         default=None,
@@ -131,48 +142,109 @@ def main():
         print()
         run_dataset_tests()
     elif args.benchmark_dataset:
+        import datetime
+        ts_suffix = f"_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}" if args.timestamp else ""
+        
         puzzles = load_normalized_dataset(
             source=args.source if args.source != "all" else None,
             difficulty=args.difficulty if args.difficulty != "all" else None,
+            size=args.size if args.size else None,
             limit=args.limit,
         )
-        csv_enc = args.output_csv if args.output_csv else None
-        csv_solv = args.output_csv.replace(".csv", "_solvers.csv") if args.output_csv else None
+        csv_enc = (
+            args.output_csv.replace(".csv", f"{ts_suffix}.csv")
+            if (args.output_csv and args.timestamp)
+            else args.output_csv
+        )
+        csv_solv = (
+            args.output_csv.replace(".csv", f"_solvers{ts_suffix}.csv")
+            if (args.output_csv and args.timestamp)
+            else (args.output_csv.replace(".csv", "_solvers.csv") if args.output_csv else None)
+        )
+        
+        json_enc = (
+            args.output_json.replace(".json", f"{ts_suffix}.json")
+            if (args.output_json and args.timestamp)
+            else args.output_json
+        )
+        json_solv = (
+            args.output_json.replace(".json", f"_solvers{ts_suffix}.json")
+            if (args.output_json and args.timestamp)
+            else (args.output_json.replace(".json", "_solvers.json") if args.output_json else None)
+        )
+        
+        plot_enc = args.output_plot.replace(".png", "_encodings.png") if args.output_plot else f"reports/benchmark_encodings{ts_suffix}.png"
+        plot_solv = args.output_plot.replace(".png", "_solvers.png") if args.output_plot else f"reports/benchmark_solvers{ts_suffix}.png"
+        
         benchmark_dataset_encodings(
             puzzles=puzzles,
-            plot=args.plot,
+            plot=args.plot or bool(args.output_plot),
             output_csv=csv_enc,
-            output_json=args.output_json,
+            output_json=json_enc,
+            plot_path=plot_enc,
         )
         benchmark_dataset_solvers(
             puzzles=puzzles,
-            plot=args.plot,
+            plot=args.plot or bool(args.output_plot),
             output_csv=csv_solv,
-            output_json=args.output_json.replace(".json", "_solvers.json") if args.output_json else None,
+            output_json=json_solv,
+            plot_path=plot_solv,
         )
     elif args.benchmark_dataset_solvers:
+        import datetime
+        ts_suffix = f"_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}" if args.timestamp else ""
+        plot_file = args.output_plot if args.output_plot else f"reports/benchmark_solvers{ts_suffix}.png"
+        csv_file = (
+            args.output_csv.replace(".csv", f"{ts_suffix}.csv")
+            if (args.output_csv and args.timestamp)
+            else args.output_csv
+        )
+        json_file = (
+            args.output_json.replace(".json", f"{ts_suffix}.json")
+            if (args.output_json and args.timestamp)
+            else args.output_json
+        )
+
         puzzles = load_normalized_dataset(
             source=args.source if args.source != "all" else None,
             difficulty=args.difficulty if args.difficulty != "all" else None,
+            size=args.size if args.size else None,
             limit=args.limit,
         )
         benchmark_dataset_solvers(
             puzzles=puzzles,
-            plot=args.plot,
-            output_csv=args.output_csv,
-            output_json=args.output_json,
+            plot=args.plot or bool(args.output_plot),
+            output_csv=csv_file,
+            output_json=json_file,
+            plot_path=plot_file,
         )
     elif args.benchmark_dataset_encodings:
+        import datetime
+        ts_suffix = f"_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}" if args.timestamp else ""
+        plot_file = args.output_plot if args.output_plot else f"reports/benchmark_encodings{ts_suffix}.png"
+        csv_file = (
+            args.output_csv.replace(".csv", f"{ts_suffix}.csv")
+            if (args.output_csv and args.timestamp)
+            else args.output_csv
+        )
+        json_file = (
+            args.output_json.replace(".json", f"{ts_suffix}.json")
+            if (args.output_json and args.timestamp)
+            else args.output_json
+        )
+
         puzzles = load_normalized_dataset(
             source=args.source if args.source != "all" else None,
             difficulty=args.difficulty if args.difficulty != "all" else None,
+            size=args.size if args.size else None,
             limit=args.limit,
         )
         benchmark_dataset_encodings(
             puzzles=puzzles,
-            plot=args.plot,
-            output_csv=args.output_csv,
-            output_json=args.output_json,
+            plot=args.plot or bool(args.output_plot),
+            output_csv=csv_file,
+            output_json=json_file,
+            plot_path=plot_file,
         )
     elif args.benchmark_all:
         grid = DEFAULT_GRID_16X16 if args.size == "16" else (DEFAULT_GRID_4X4 if args.size == "4" else DEFAULT_GRID)

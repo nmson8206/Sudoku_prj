@@ -14,6 +14,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 import time
 import argparse
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 from pysat.solvers import Glucose3
 
@@ -188,7 +189,6 @@ def benchmark_dataset_encodings(
     # Xuất ra file CSV nếu được yêu cầu
     if output_csv:
         import pandas as pd
-        from pathlib import Path
         Path(output_csv).parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(records).to_csv(output_csv, index=False, encoding="utf-8-sig")
         print(f"[Export] Đã lưu dữ liệu chi tiết SAT Encodings ra: {output_csv}")
@@ -196,19 +196,27 @@ def benchmark_dataset_encodings(
     # Xuất ra file JSON nếu được yêu cầu
     if output_json:
         import json
-        from pathlib import Path
         Path(output_json).parent.mkdir(parents=True, exist_ok=True)
         with open(output_json, "w", encoding="utf-8") as f:
             json.dump({"summary": summary_data, "details": records}, f, indent=2, ensure_ascii=False)
         print(f"[Export] Đã lưu tóm tắt JSON ra: {output_json}")
 
+    # Xác định kích thước lưới Sudoku (ví dụ 9x9 hoặc 16x16)
+    sizes = list({len(p["grid"]) for p in puzzles if "grid" in p})
+    size_str = f"{sizes[0]}x{sizes[0]}" if len(sizes) == 1 else ",".join(f"{s}x{s}" for s in sizes)
+
     # Vẽ biểu đồ Matplotlib nếu được yêu cầu
     if plot:
         from benchmarks.plotter import plot_encodings_benchmark, plot_difficulty_comparison
-        plot_encodings_benchmark(stats, output_path=plot_path, title_suffix=f"({total_puzzles} puzzles)")
+        plot_encodings_benchmark(stats, output_path=plot_path, title_suffix=f"(Sudoku {size_str} - {total_puzzles} puzzles)")
         if diff_chart_data:
-            diff_plot_path = str(Path(plot_path).parent / "benchmark_encodings_difficulty.png")
-            plot_difficulty_comparison(diff_chart_data, output_path=diff_plot_path, title=f"Thời gian SAT Encodings theo độ khó ({total_puzzles} puzzles)")
+            p_obj = Path(plot_path)
+            # Giữ nguyên phần mở rộng và suffix (ví dụ _20261017_203900) từ plot_path
+            stem = p_obj.stem.replace("benchmark_encodings", "benchmark_encodings_difficulty")
+            if "difficulty" not in stem:
+                stem = f"{stem}_difficulty"
+            diff_plot_path = str(p_obj.parent / f"{stem}{p_obj.suffix}")
+            plot_difficulty_comparison(diff_chart_data, output_path=diff_plot_path, title=f"Thời gian SAT Encodings theo độ khó (Sudoku {size_str} - {total_puzzles} puzzles)")
 
 
 
@@ -234,8 +242,11 @@ def benchmark_dataset_solvers(
         return
 
     solvers = [
-        ("SAT (Glucose3 - Product)", lambda g: solve_sudoku_sat(g, method="product")),
         ("SAT (Glucose3 - Pairwise)", lambda g: solve_sudoku_sat(g, method="pairwise")),
+        ("SAT (Glucose3 - Binary)", lambda g: solve_sudoku_sat(g, method="binary")),
+        ("SAT (Glucose3 - Commander)", lambda g: solve_sudoku_sat(g, method="commander")),
+        ("SAT (Glucose3 - Product)", lambda g: solve_sudoku_sat(g, method="product")),
+        ("SAT (Glucose3 - SeqCounter)", lambda g: solve_sudoku_sat(g, method="seqcounter")),
         ("CP-SAT (Google OR-Tools)", solve_sudoku_cpsat),
         ("ILP (PuLP / CBC)", solve_sudoku_ilp),
         ("Gurobi (MIP)", solve_sudoku_gurobi),
@@ -336,7 +347,6 @@ def benchmark_dataset_solvers(
     # Xuất ra file CSV nếu được yêu cầu
     if output_csv:
         import pandas as pd
-        from pathlib import Path
         Path(output_csv).parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(records).to_csv(output_csv, index=False, encoding="utf-8-sig")
         print(f"[Export] Đã lưu dữ liệu chi tiết Solvers ra: {output_csv}")
@@ -344,16 +354,19 @@ def benchmark_dataset_solvers(
     # Xuất ra file JSON nếu được yêu cầu
     if output_json:
         import json
-        from pathlib import Path
         Path(output_json).parent.mkdir(parents=True, exist_ok=True)
         with open(output_json, "w", encoding="utf-8") as f:
             json.dump({"summary": summary_data, "details": records}, f, indent=2, ensure_ascii=False)
         print(f"[Export] Đã lưu tóm tắt Solvers JSON ra: {output_json}")
 
+    # Xác định kích thước lưới Sudoku (ví dụ 9x9 hoặc 16x16)
+    sizes = list({len(p["grid"]) for p in puzzles if "grid" in p})
+    size_str = f"{sizes[0]}x{sizes[0]}" if len(sizes) == 1 else ",".join(f"{s}x{s}" for s in sizes)
+
     # Vẽ biểu đồ Matplotlib nếu được yêu cầu
     if plot:
         from benchmarks.plotter import plot_solvers_benchmark
-        plot_solvers_benchmark(solver_stats, output_path=plot_path, title_suffix=f"({total_puzzles} puzzles)")
+        plot_solvers_benchmark(solver_stats, output_path=plot_path, title_suffix=f"(Sudoku {size_str} - {total_puzzles} puzzles)")
 
 
 

@@ -37,60 +37,87 @@ DEFAULT_DATASET_PATH = DATA_DIR / "benchmark_dataset.json"
 
 def string_to_grid(puzzle_str: str) -> List[List[int]]:
     """
-    Chuyển chuỗi 81 ký tự thành ma trận 9x9 chứa các số nguyên (0 là ô trống).
+    Chuyển chuỗi puzzle thành ma trận N x N (hỗ trợ 4x4=16, 9x9=81, 16x16=256).
     """
     if not isinstance(puzzle_str, str):
         puzzle_str = str(puzzle_str)
 
     clean_str = puzzle_str.strip().replace(".", "0")
-    if len(clean_str) != 81:
-        raise ValueError(f"Chuỗi Sudoku phải có đúng 81 ký tự, nhận được: {len(clean_str)}")
+    length = len(clean_str)
+    
+    # Xác định kích thước N từ độ dài chuỗi
+    import math
+    N = math.isqrt(length)
+    if N * N != length:
+        raise ValueError(f"Chuỗi Sudoku có độ dài {length} không phải là bình phương hoàn hảo (NxN).")
 
     grid: List[List[int]] = []
-    for r in range(9):
-        row = [int(clean_str[r * 9 + c]) for c in range(9)]
+    for r in range(N):
+        row = []
+        for c in range(N):
+            ch = clean_str[r * N + c]
+            if ch.isdigit():
+                val = int(ch)
+            else:
+                # Hỗ trợ ký tự Hexadoku (A=10..G=16)
+                val = ord(ch.upper()) - ord('A') + 10
+            row.append(val)
         grid.append(row)
     return grid
 
 
 def grid_to_string(grid: List[List[int]]) -> str:
     """
-    Chuyển ma trận 9x9 thành chuỗi 81 ký tự.
+    Chuyển ma trận N x N thành chuỗi.
     """
-    if not grid or len(grid) != 9:
-        raise ValueError("Ma trận Sudoku phải có kích thước 9x9.")
+    if not grid or not isinstance(grid, list):
+        raise ValueError("Ma trận Sudoku không hợp lệ.")
+    N = len(grid)
     chars = []
     for row in grid:
-        if len(row) != 9:
-            raise ValueError("Mỗi hàng trong ma trận Sudoku phải có 9 ô.")
-        chars.extend(str(val) for val in row)
+        for val in row:
+            if val == 0:
+                chars.append("0")
+            elif 1 <= val <= 9:
+                chars.append(str(val))
+            elif 10 <= val <= 36:
+                chars.append(chr(ord('A') + val - 10))
+            else:
+                chars.append("?")
     return "".join(chars)
 
 
-def infer_difficulty(clues_count: int, explicit_label: Optional[str] = None) -> str:
+def infer_difficulty(clues_count: int, N: int = 9, explicit_label: Optional[str] = None) -> str:
     """
-    Chuẩn hóa cấp độ khó của Sudoku dựa trên nhãn có sẵn hoặc số lượng gợi ý (clues).
-    - expert: <= 22 gợi ý (hoặc nhãn diabolical, expert, 17-clue)
-    - hard: 23 - 27 gợi ý
-    - medium: 28 - 35 gợi ý
-    - easy: >= 36 gợi ý
+    Chuẩn hóa cấp độ khó của Sudoku dựa trên tỷ lệ ô gợi ý (Clue Density) và kích thước N:
+    - expert: Tỷ lệ clues <= 27% (ít gợi ý, suy luận sâu)
+    - hard: 28% - 33%
+    - medium: 34% - 42%
+    - easy: >= 43% (nhiều gợi ý)
     """
+    total_cells = N * N
+    ratio = clues_count / total_cells if total_cells > 0 else 0.3
+
     if explicit_label:
         label = str(explicit_label).strip().lower()
-        if any(w in label for w in ["expert", "evil", "diabolical", "extreme"]):
+        if label in ["expert", "evil", "diabolical", "extreme"]:
             return "expert"
-        if any(w in label for w in ["hard", "difficult"]):
+        if label in ["hard", "difficult"]:
             return "hard"
-        if any(w in label for w in ["medium", "normal", "moderate"]):
+        if label in ["medium", "normal", "moderate"]:
             return "medium"
-        if any(w in label for w in ["easy", "simple", "beginner"]):
+        if label in ["easy", "simple", "beginner"]:
+            if ratio <= 0.32:
+                return "hard"
+            elif ratio <= 0.40:
+                return "medium"
             return "easy"
 
-    if clues_count <= 22:
+    if ratio <= 0.27:
         return "expert"
-    elif clues_count <= 27:
+    elif ratio <= 0.33:
         return "hard"
-    elif clues_count <= 35:
+    elif ratio <= 0.42:
         return "medium"
     else:
         return "easy"
@@ -105,26 +132,28 @@ def normalize_puzzle(
     difficulty: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    Chuẩn hóa bất kỳ định dạng Sudoku nào thành schema thống nhất.
+    Chuẩn hóa bất kỳ định dạng Sudoku nào (4x4, 9x9, 16x16,...) thành schema thống nhất.
     """
     # 1. Chuẩn hóa puzzle grid và string
     if isinstance(raw_puzzle, str):
         p_str = raw_puzzle.strip().replace(".", "0")
         p_grid = string_to_grid(p_str)
     elif isinstance(raw_puzzle, list):
-        if len(raw_puzzle) == 9 and isinstance(raw_puzzle[0], list):
-            # Ma trận 2D 9x9
+        if len(raw_puzzle) > 0 and isinstance(raw_puzzle[0], list):
+            # Ma trận 2D N x N
+            N = len(raw_puzzle)
             p_grid = [[int(cell) for cell in row] for row in raw_puzzle]
             p_str = grid_to_string(p_grid)
-        elif len(raw_puzzle) == 81:
-            # Danh sách phẳng 81 phần tử
-            p_str = "".join(str(x) if str(x) != "." else "0" for x in raw_puzzle)
-            p_grid = string_to_grid(p_str)
         else:
-            raise ValueError(f"Định dạng danh sách puzzle không hợp lệ (độ dài: {len(raw_puzzle)})")
+            # Danh sách phẳng
+            import math
+            N = math.isqrt(len(raw_puzzle))
+            p_grid = [[int(raw_puzzle[r * N + c]) for c in range(N)] for r in range(N)]
+            p_str = grid_to_string(p_grid)
     else:
         raise TypeError(f"Kiểu dữ liệu puzzle không được hỗ trợ: {type(raw_puzzle)}")
 
+    N = len(p_grid)
     # 2. Đếm số gợi ý (clues)
     clues_count = sum(1 for row in p_grid for cell in row if cell != 0)
 
@@ -135,26 +164,26 @@ def normalize_puzzle(
         try:
             if isinstance(raw_solution, str):
                 s_str = raw_solution.strip().replace(".", "0")
-                if len(s_str) == 81:
-                    s_grid = string_to_grid(s_str)
+                s_grid = string_to_grid(s_str)
             elif isinstance(raw_solution, list):
-                if len(raw_solution) == 9 and isinstance(raw_solution[0], list):
+                if len(raw_solution) > 0 and isinstance(raw_solution[0], list):
                     s_grid = [[int(cell) for cell in row] for row in raw_solution]
                     s_str = grid_to_string(s_grid)
-                elif len(raw_solution) == 81:
-                    s_str = "".join(str(x) for x in raw_solution)
-                    s_grid = string_to_grid(s_str)
+                else:
+                    s_grid = [[int(raw_solution[r * N + c]) for c in range(N)] for r in range(N)]
+                    s_str = grid_to_string(s_grid)
         except Exception:
             s_str = None
             s_grid = None
 
     # 4. Xác định độ khó chuẩn hóa
-    norm_diff = infer_difficulty(clues_count, explicit_label=difficulty)
+    norm_diff = infer_difficulty(clues_count, N=N, explicit_label=difficulty)
 
     return {
         "id": puzzle_id,
         "source": source,
         "dataset": dataset,
+        "size": N,
         "difficulty": norm_diff,
         "clues_count": clues_count,
         "puzzle_string": p_str,
@@ -367,8 +396,8 @@ def load_from_norvig_benchmark(limit_per_category: int = 50) -> List[Dict[str, A
     import urllib.request
 
     sources = [
-        ("top95", "https://norvig.com/top95.txt", "expert", limit_per_category),
-        ("easy50", "https://norvig.com/easy50.txt", "easy", limit_per_category),
+        ("top95", "https://norvig.com/top95.txt", None, limit_per_category),
+        ("easy50", "https://norvig.com/easy50.txt", None, limit_per_category),
         ("hardest", "https://norvig.com/hardest.txt", "expert", limit_per_category),
     ]
 
@@ -427,6 +456,147 @@ def load_from_norvig_benchmark(limit_per_category: int = 50) -> List[Dict[str, A
     return puzzles
 
 
+def load_from_sudoku_exchange_bank(limit_per_category: int = 40) -> List[Dict[str, Any]]:
+    """
+    Tải trực tiếp các bài Sudoku từ ngân hàng câu đố Sudoku Exchange (hỗ trợ easy, medium, hard, diabolical).
+    Đây là nguồn chuẩn mực cung cấp đầy đủ các cấp độ khó khác nhau.
+    """
+    import urllib.request
+
+    sources = [
+        ("easy", "https://raw.githubusercontent.com/grantm/sudoku-exchange-puzzle-bank/master/easy.txt", "easy"),
+        ("medium", "https://raw.githubusercontent.com/grantm/sudoku-exchange-puzzle-bank/master/medium.txt", "medium"),
+        ("hard", "https://raw.githubusercontent.com/grantm/sudoku-exchange-puzzle-bank/master/hard.txt", "hard"),
+        ("diabolical", "https://raw.githubusercontent.com/grantm/sudoku-exchange-puzzle-bank/master/diabolical.txt", "expert"),
+    ]
+
+    puzzles: List[Dict[str, Any]] = []
+
+    for name, url, diff_label in sources:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as response:
+                added = 0
+                for _ in range(limit_per_category * 2):
+                    line = response.readline().decode("utf-8", errors="ignore").strip()
+                    if not line:
+                        break
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        p_str = parts[1]
+                        if len(p_str) == 81 and all(c in "0123456789." for c in p_str):
+                            p_id = f"exchange_{name}_{added + 1:04d}"
+                            norm = normalize_puzzle(
+                                raw_puzzle=p_str,
+                                puzzle_id=p_id,
+                                source="sudoku_exchange",
+                                dataset=f"sudoku_exchange/{name}",
+                                difficulty=diff_label,
+                            )
+                            puzzles.append(norm)
+                            added += 1
+                            if added >= limit_per_category:
+                                break
+                print(f"[Sudoku Exchange] Đã tải thành công {added} bài độ khó '{name}'.")
+        except Exception as e:
+            print(f"[Sudoku Exchange] Không thể tải '{name}' ({e}).")
+
+    return puzzles
+
+
+def get_multisize_puzzles() -> List[Dict[str, Any]]:
+    """
+    Tập hợp các bài Sudoku kích thước đa dạng (4x4 Mini-Sudoku và 16x16 Hexadoku)
+    đáp ứng yêu cầu 'thực nghiệm với các ma trận có kích thước lớn' của đề bài.
+    """
+    multisize: List[Dict[str, Any]] = []
+
+    # 1. Tập các bài Sudoku 4x4
+    grids_4x4 = [
+        # Easy / Medium / Hard 4x4
+        ([[1, 0, 3, 0], [0, 0, 0, 1], [4, 0, 0, 0], [0, 2, 0, 4]], "medium"),
+        ([[0, 2, 0, 0], [0, 0, 1, 0], [0, 3, 0, 0], [0, 0, 4, 0]], "hard"),
+        ([[1, 2, 3, 0], [3, 4, 0, 0], [2, 0, 4, 0], [0, 0, 0, 0]], "easy"),
+        ([[0, 0, 0, 4], [0, 0, 3, 0], [0, 1, 0, 0], [2, 0, 0, 0]], "expert"),
+        ([[0, 1, 0, 0], [4, 0, 0, 0], [0, 0, 0, 2], [0, 0, 3, 0]], "hard"),
+        ([[0, 0, 3, 4], [3, 4, 0, 0], [0, 0, 4, 3], [4, 3, 0, 0]], "medium"),
+        ([[2, 0, 0, 1], [0, 0, 0, 0], [0, 0, 0, 0], [4, 0, 0, 3]], "expert"),
+        ([[1, 0, 0, 4], [0, 2, 3, 0], [0, 3, 2, 0], [4, 0, 0, 1]], "easy"),
+        ([[0, 0, 0, 0], [0, 1, 2, 0], [0, 3, 4, 0], [0, 0, 0, 0]], "expert"),
+        ([[1, 0, 0, 0], [0, 2, 0, 0], [0, 0, 3, 0], [0, 0, 0, 4]], "expert"),
+    ]
+
+    for idx, (g, diff) in enumerate(grids_4x4):
+        multisize.append(normalize_puzzle(
+            raw_puzzle=g,
+            puzzle_id=f"matrix4x4_{idx + 1:04d}",
+            source="benchmark_multisize",
+            dataset="synthetic_4x4",
+            difficulty=diff,
+        ))
+
+    # 2. Tập các bài Sudoku 16x16 (Hexadoku)
+    # Khởi tạo ma trận cơ sở 16x16 hợp lệ
+    base_16 = [
+        [ 1,  2,  3,  4,   5,  6,  7,  8,   9, 10, 11, 12,  13, 14, 15, 16],
+        [ 5,  6,  7,  8,   9, 10, 11, 12,  13, 14, 15, 16,   1,  2,  3,  4],
+        [ 9, 10, 11, 12,  13, 14, 15, 16,   1,  2,  3,  4,   5,  6,  7,  8],
+        [13, 14, 15, 16,   1,  2,  3,  4,   5,  6,  7,  8,   9, 10, 11, 12],
+
+        [ 2,  3,  4,  1,   6,  7,  8,  5,  10, 11, 12,  9,  14, 15, 16, 13],
+        [ 6,  7,  8,  5,  10, 11, 12,  9,  14, 15, 16, 13,   2,  3,  4,  1],
+        [10, 11, 12,  9,  14, 15, 16, 13,   2,  3,  4,  1,   6,  7,  8,  5],
+        [14, 15, 16, 13,   2,  3,  4,  1,   6,  7,  8,  5,  10, 11, 12,  9],
+
+        [ 3,  4,  1,  2,   7,  8,  5,  6,  11, 12,  9, 10,  15, 16, 13, 14],
+        [ 7,  8,  5,  6,  11, 12,  9, 10,  15, 16, 13, 14,   3,  4,  1,  2],
+        [11, 12,  9, 10,  15, 16, 13, 14,   3,  4,  1,  2,   7,  8,  5,  6],
+        [15, 16, 13, 14,   3,  4,  1,  2,   7,  8,  5,  6,  11, 12,  9, 10],
+
+        [ 4,  1,  2,  3,   8,  5,  6,  7,  12,  9, 10, 11,  16, 13, 14, 15],
+        [ 8,  5,  6,  7,  12,  9, 10, 11,  16, 13, 14, 15,   4,  1,  2,  3],
+        [12,  9, 10, 11,  16, 13, 14, 15,   4,  1,  2,  3,   8,  5,  6,  7],
+        [16, 13, 14, 15,   4,  1,  2,  3,   8,  5,  6,  7,  12,  9, 10, 11],
+    ]
+
+    # Sinh các bài 16x16 với các tỷ lệ đục lỗ khác nhau để tạo cấp độ khó từ Easy đến Expert
+    import random
+    rng = random.Random(42)
+    rates = [
+        (0.55, "easy"),    # 55% clues
+        (0.48, "easy"),
+        (0.40, "medium"),  # 40% clues
+        (0.35, "medium"),
+        (0.30, "hard"),    # 30% clues
+        (0.28, "hard"),
+        (0.25, "expert"),  # 25% clues
+        (0.22, "expert"),
+        (0.20, "expert"),
+        (0.18, "expert"),
+    ]
+
+    for idx, (rate, diff) in enumerate(rates):
+        grid_copy = [row[:] for row in base_16]
+        # Xóa các ô ngẫu nhiên đối xứng
+        total_to_remove = int(256 * (1.0 - rate))
+        indices = list(range(256))
+        rng.shuffle(indices)
+        for k in range(total_to_remove):
+            r = indices[k] // 16
+            c = indices[k] % 16
+            grid_copy[r][c] = 0
+
+        multisize.append(normalize_puzzle(
+            raw_puzzle=grid_copy,
+            puzzle_id=f"hexadoku16x16_{idx + 1:04d}",
+            source="benchmark_multisize",
+            dataset="synthetic_16x16",
+            difficulty=diff,
+        ))
+
+    return multisize
+
+
 def prepare_benchmark_dataset(
     output_path: Union[str, Path] = DEFAULT_DATASET_PATH,
     kaggle_limit: int = 50,
@@ -463,7 +633,23 @@ def prepare_benchmark_dataset(
     if norvig_puzzles:
         all_puzzles.extend(norvig_puzzles)
 
-    # 2. Tải từ KaggleHub (Bộ Top95 benchmark kinh điển)
+    # 2. Tải từ Sudoku Exchange Puzzle Bank (Đa dạng 4 cấp độ: Easy, Medium, Hard, Diabolical/Expert)
+    try:
+        exchange_puzzles = load_from_sudoku_exchange_bank(limit_per_category=40)
+        if exchange_puzzles:
+            all_puzzles.extend(exchange_puzzles)
+    except Exception as e:
+        print(f"[CẢNH BÁO] Không thể tải từ Sudoku Exchange ({e}).")
+
+    # 3. Thêm các bài Sudoku kích thước đa dạng (4x4, 16x16)
+    try:
+        multisize_puzzles = get_multisize_puzzles()
+        all_puzzles.extend(multisize_puzzles)
+        print(f"[Multisize] Đã tích hợp {len(multisize_puzzles)} bài Sudoku kích thước 4x4 và 16x16 Hexadoku.")
+    except Exception as e:
+        print(f"[CẢNH BÁO] Không thể khởi tạo multisize puzzles ({e}).")
+
+    # 4. Tải từ KaggleHub (Bộ Top95 benchmark kinh điển)
     try:
         kaggle_puzzles = load_from_kagglehub(
             dataset_name="gaz3ll3/top95-sudoku",
@@ -474,7 +660,7 @@ def prepare_benchmark_dataset(
     except Exception as e:
         print(f"[CẢNH BÁO] Không thể tải từ KaggleHub ({e}). Tiếp tục...")
 
-    # 3. Tải từ Hugging Face (Bộ Ritvik19/Sudoku-Dataset)
+    # 5. Tải từ Hugging Face (Bộ Ritvik19/Sudoku-Dataset)
     try:
         hf_puzzles = load_from_huggingface(
             dataset_name="Ritvik19/Sudoku-Dataset",
@@ -503,10 +689,11 @@ def load_normalized_dataset(
     dataset_path: Union[str, Path] = DEFAULT_DATASET_PATH,
     source: Optional[str] = None,
     difficulty: Optional[str] = None,
+    size: Optional[Union[int, str]] = None,
     limit: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Đọc dữ liệu chuẩn hóa đã chuẩn bị sẵn và lọc theo điều kiện (source, difficulty, limit).
+    Đọc dữ liệu chuẩn hóa đã chuẩn bị sẵn và lọc theo điều kiện (source, difficulty, size, limit).
     """
     dataset_path = Path(dataset_path)
     if not dataset_path.exists():
@@ -516,6 +703,10 @@ def load_normalized_dataset(
             puzzles = json.load(f)
 
     filtered = puzzles
+    if size is not None and str(size).lower() != "all":
+        target_size = int(size)
+        filtered = [p for p in filtered if p.get("size", len(p.get("grid", []))) == target_size]
+
     if source and source.lower() != "all":
         src_query = source.lower()
         filtered = [p for p in filtered if src_query in p["source"].lower() or src_query in p["dataset"].lower()]
@@ -525,7 +716,34 @@ def load_normalized_dataset(
         filtered = [p for p in filtered if p["difficulty"].lower() == diff_query]
 
     if limit is not None and limit > 0:
-        filtered = filtered[:limit]
+        if difficulty is None or difficulty.lower() == "all":
+            # Phân bổ đều các cấp độ khó khác nhau (easy, medium, hard, expert)
+            # để đảm bảo tập test có tính đại diện và kích hoạt được phân tích theo độ khó
+            from collections import defaultdict
+            by_diff = defaultdict(list)
+            for p in filtered:
+                by_diff[p.get("difficulty", "unknown")].append(p)
+            
+            diff_keys = list(by_diff.keys())
+            if len(diff_keys) > 1:
+                balanced = []
+                per_diff = max(1, limit // len(diff_keys))
+                for k in diff_keys:
+                    balanced.extend(by_diff[k][:per_diff])
+                # Nếu còn thiếu do phép chia nguyên, bổ sung thêm
+                rem = limit - len(balanced)
+                if rem > 0:
+                    used_ids = {p.get("id") for p in balanced}
+                    for p in filtered:
+                        if p.get("id") not in used_ids:
+                            balanced.append(p)
+                            if len(balanced) >= limit:
+                                break
+                filtered = balanced[:limit]
+            else:
+                filtered = filtered[:limit]
+        else:
+            filtered = filtered[:limit]
 
     return filtered
 

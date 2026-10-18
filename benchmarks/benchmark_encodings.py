@@ -25,11 +25,11 @@ def benchmark_encodings(grid: Optional[List[List[int]]] = None):
 
     N = len(grid)
     methods = [
-        ("Pairwise (Naive)", "pairwise"),
-        ("Binary (PySAT Bitwise)", "binary"),
+        ("Pairwise", "pairwise"),
+        ("Binary", "binary"),
         ("Commander Encoding", "commander"),
-        ("Product Encoding (Chen)", "product"),
-        ("Sequential Counter (PySAT)", "seqcounter"),
+        ("Product Encoding", "product"),
+        ("Sequential Counter", "seqcounter"),
     ]
 
     print("=" * 86)
