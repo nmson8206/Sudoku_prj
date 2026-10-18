@@ -107,10 +107,6 @@ def infer_difficulty(clues_count: int, N: int = 9, explicit_label: Optional[str]
         if label in ["medium", "normal", "moderate"]:
             return "medium"
         if label in ["easy", "simple", "beginner"]:
-            if ratio <= 0.32:
-                return "hard"
-            elif ratio <= 0.40:
-                return "medium"
             return "easy"
 
     if ratio <= 0.27:
