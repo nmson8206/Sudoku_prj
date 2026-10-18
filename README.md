@@ -183,9 +183,20 @@ python main.py --benchmark-dataset --difficulty expert --limit 20
 python main.py --benchmark-dataset --source norvig --limit 30
 ```
 
-#### 6. Xuất dữ liệu thống kê ra file CSV / JSON chi tiết & đặt tên biểu đồ tùy chỉnh:
+#### 6. Xuất dữ liệu thống kê ra file CSV / JSON (tự động hoặc tùy chỉnh):
 ```bash
+# Cách 1: Xuất nhanh không cần nhập đường dẫn (tự động lưu vào reports/):
+python main.py --benchmark-dataset --limit 50 --csv --json
+
+# Xuất nhanh kết hợp --timestamp để tự động đánh dấu thời gian chống trùng lặp:
+python main.py --benchmark-dataset --limit 50 --csv --json --timestamp
+
+# Cách 2: Tùy chỉnh đường dẫn hoặc tên file theo ý muốn:
 python main.py --benchmark-dataset --limit 50 --output-csv reports/results.csv --output-json reports/summary.json
+
+# Tùy chỉnh tên file kèm --timestamp:
+python main.py --benchmark-dataset --limit 50 --timestamp --output-csv reports/results.csv --output-json reports/summary.json
+# Kết quả sinh ra: reports/results_<timestamp>.csv (và _solvers_<timestamp>.csv), reports/summary_<timestamp>.json (và _solvers_<timestamp>.json)
 
 # Đặt tên/đường dẫn biểu đồ tùy chỉnh (tự bật chế độ vẽ):
 python main.py --benchmark-dataset-encodings --limit 50 --output-plot reports/my_plot.png

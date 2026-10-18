@@ -112,16 +112,30 @@ def main():
         help="Tự động thêm timestamp vào tên file ảnh/csv/json để không bao giờ bị ghi đè hay trùng tên"
     )
     parser.add_argument(
+        "--csv",
+        action="store_true",
+        help="Tự động xuất kết quả chi tiết ra file CSV trong thư mục reports/ (không cần nhập đường dẫn)"
+    )
+    parser.add_argument(
         "--output-csv",
         type=str,
+        nargs="?",
+        const="",
         default=None,
-        help="Đường dẫn file CSV để lưu kết quả chi tiết từng bài test (ví dụ: reports/results.csv)"
+        help="Đường dẫn file CSV tùy chỉnh (nếu chỉ truyền cờ mà không kèm đường dẫn, mặc định lưu vào reports/)"
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Tự động xuất tóm tắt thống kê benchmark ra file JSON trong thư mục reports/ (không cần nhập đường dẫn)"
     )
     parser.add_argument(
         "--output-json",
         type=str,
+        nargs="?",
+        const="",
         default=None,
-        help="Đường dẫn file JSON để lưu tóm tắt thống kê benchmark"
+        help="Đường dẫn file JSON tùy chỉnh (nếu chỉ truyền cờ mà không kèm đường dẫn, mặc định lưu vào reports/)"
     )
 
     # Kiểm thử
@@ -151,26 +165,33 @@ def main():
             size=args.size if args.size else None,
             limit=args.limit,
         )
+
+        # Xử lý đường dẫn CSV mặc định khi không nhập đường dẫn
+        csv_requested = args.csv or (args.output_csv is not None)
+        raw_csv = args.output_csv if (args.output_csv is not None and args.output_csv != "") else "reports/benchmark_encodings.csv"
         csv_enc = (
-            args.output_csv.replace(".csv", f"{ts_suffix}.csv")
-            if (args.output_csv and args.timestamp)
-            else args.output_csv
+            raw_csv.replace(".csv", f"{ts_suffix}.csv")
+            if (csv_requested and args.timestamp)
+            else (raw_csv if csv_requested else None)
         )
         csv_solv = (
-            args.output_csv.replace(".csv", f"_solvers{ts_suffix}.csv")
-            if (args.output_csv and args.timestamp)
-            else (args.output_csv.replace(".csv", "_solvers.csv") if args.output_csv else None)
+            raw_csv.replace(".csv", f"_solvers{ts_suffix}.csv")
+            if (csv_requested and args.timestamp)
+            else (raw_csv.replace(".csv", "_solvers.csv") if csv_requested else None)
         )
         
+        # Xử lý đường dẫn JSON mặc định khi không nhập đường dẫn
+        json_requested = args.json or (args.output_json is not None)
+        raw_json = args.output_json if (args.output_json is not None and args.output_json != "") else "reports/benchmark_summary.json"
         json_enc = (
-            args.output_json.replace(".json", f"{ts_suffix}.json")
-            if (args.output_json and args.timestamp)
-            else args.output_json
+            raw_json.replace(".json", f"{ts_suffix}.json")
+            if (json_requested and args.timestamp)
+            else (raw_json if json_requested else None)
         )
         json_solv = (
-            args.output_json.replace(".json", f"_solvers{ts_suffix}.json")
-            if (args.output_json and args.timestamp)
-            else (args.output_json.replace(".json", "_solvers.json") if args.output_json else None)
+            raw_json.replace(".json", f"_solvers{ts_suffix}.json")
+            if (json_requested and args.timestamp)
+            else (raw_json.replace(".json", "_solvers.json") if json_requested else None)
         )
         
         plot_enc = args.output_plot.replace(".png", "_encodings.png") if args.output_plot else f"reports/benchmark_encodings{ts_suffix}.png"
@@ -194,15 +215,21 @@ def main():
         import datetime
         ts_suffix = f"_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}" if args.timestamp else ""
         plot_file = args.output_plot if args.output_plot else f"reports/benchmark_solvers{ts_suffix}.png"
+        
+        csv_requested = args.csv or (args.output_csv is not None)
+        raw_csv = args.output_csv if (args.output_csv is not None and args.output_csv != "") else "reports/benchmark_solvers.csv"
         csv_file = (
-            args.output_csv.replace(".csv", f"{ts_suffix}.csv")
-            if (args.output_csv and args.timestamp)
-            else args.output_csv
+            raw_csv.replace(".csv", f"{ts_suffix}.csv")
+            if (csv_requested and args.timestamp)
+            else (raw_csv if csv_requested else None)
         )
+
+        json_requested = args.json or (args.output_json is not None)
+        raw_json = args.output_json if (args.output_json is not None and args.output_json != "") else "reports/benchmark_solvers_summary.json"
         json_file = (
-            args.output_json.replace(".json", f"{ts_suffix}.json")
-            if (args.output_json and args.timestamp)
-            else args.output_json
+            raw_json.replace(".json", f"{ts_suffix}.json")
+            if (json_requested and args.timestamp)
+            else (raw_json if json_requested else None)
         )
 
         puzzles = load_normalized_dataset(
@@ -222,15 +249,21 @@ def main():
         import datetime
         ts_suffix = f"_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}" if args.timestamp else ""
         plot_file = args.output_plot if args.output_plot else f"reports/benchmark_encodings{ts_suffix}.png"
+        
+        csv_requested = args.csv or (args.output_csv is not None)
+        raw_csv = args.output_csv if (args.output_csv is not None and args.output_csv != "") else "reports/benchmark_encodings.csv"
         csv_file = (
-            args.output_csv.replace(".csv", f"{ts_suffix}.csv")
-            if (args.output_csv and args.timestamp)
-            else args.output_csv
+            raw_csv.replace(".csv", f"{ts_suffix}.csv")
+            if (csv_requested and args.timestamp)
+            else (raw_csv if csv_requested else None)
         )
+
+        json_requested = args.json or (args.output_json is not None)
+        raw_json = args.output_json if (args.output_json is not None and args.output_json != "") else "reports/benchmark_encodings_summary.json"
         json_file = (
-            args.output_json.replace(".json", f"{ts_suffix}.json")
-            if (args.output_json and args.timestamp)
-            else args.output_json
+            raw_json.replace(".json", f"{ts_suffix}.json")
+            if (json_requested and args.timestamp)
+            else (raw_json if json_requested else None)
         )
 
         puzzles = load_normalized_dataset(
