@@ -8,7 +8,6 @@ from typing import List
 
 
 def at_least_one(lits: List[int]) -> List[List[int]]:
-    """Tạo mệnh đề At-Least-One (ALO)."""
     if not lits:
         return []
     return [list(lits)]

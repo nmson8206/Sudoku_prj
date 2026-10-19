@@ -31,12 +31,5 @@ wheels/
 *.egg
 
 # LaTeX build artifacts
-*.aux
-*.abs
-*.bbl
-*.blg
-*.log
-*.out
-*.fls
 *.synctex.gz
 report/out/

@@ -55,21 +55,21 @@
 \setlength{\intextsep}{10pt plus 2pt minus 2pt}
 
 \shorttitle{Mô hình hóa SAT Encoding và Đánh giá hiệu năng giải Sudoku $N \times N$}
-\shortauthors{Nguyễn Minh Sơn - BTL 1 Các vấn đề hiện đại KHMT}
+\shortauthors{Bài tập lớn 1 - Các vấn đề hiện đại về KHMT}
 
-\title [mode = title]{NGHIÊN CỨU MÔ HÌNH HÓA SAT ENCODING CHO RÀNG\\
-BUỘC CARDINALITY (AMO/ALO) VÀ ĐÁNH GIÁ THỰC NGHIỆM SO SÁNH GIẢI SUDOKU $N \times N$ VỚI CÁC PHƯƠNG PHÁP CHÍNH XÁC (CP, ILP/MIP)}
+\title [mode = title]{SAT ENCODING CHO BÀI TOÁN SUDOKU\\
+VÀ ĐÁNH GIÁ THỰC NGHIỆM SO SÁNH GIẢI SUDOKU $N \times N$ VỚI CÁC PHƯƠNG PHÁP CHÍNH XÁC (CP, ILP/MIP)}
 
-\author[1]{Nguyễn Minh Sơn}[type=editor, auid=000, bioid=1]
+\author[1]{Nguyễn Minh Sơn - 24021614}[type=editor, auid=000, bioid=1]
 \cormark[1]
 \ead{24021614@vnu.edu.vn}
 
-\address[1]{Khoa công nghệ thông tin, Trường đại học Công nghệ}
+\address[1]{Các vấn đề hiện đại về KHMT, Khoa công nghệ thông tin, Trường đại học Công nghệ}
 
-\cortext[cor1]{Tác giả liên hệ.}
+\cortext[cor1]{Sinh viên.}
 
 \begin{abstract}
-Báo cáo trình bày việc mô hình hóa và giải Sudoku bằng SAT, tập trung vào các ràng buộc At-Least-One (ALO), At-Most-One (AMO) và Exactly-One (EO). Hệ thống tích hợp năm kỹ thuật AMO: Pairwise, Binary, Commander, 2-Product và Sequential Counter; sử dụng Glucose3 thông qua PySAT và so sánh với OR-Tools CP-SAT, IBM CP Optimizer, Gurobi, CPLEX MIP và PuLP/CBC. Bộ dữ liệu đóng gói gồm 299 bản ghi ở ba kích thước $4\times4$, $9\times9$, $16\times16$, tương ứng 298 đề phân biệt, lấy từ Peter Norvig, Sudoku Exchange và dữ liệu tự sinh. Báo cáo phân tích quy mô CNF, chi phí mã hóa và thời gian thực thi hàm giải; đồng thời mô tả kiến trúc chương trình, giao diện dòng lệnh và kiểm tra nghiệm. Các số liệu đã ghi nhận cho thấy lựa chọn encoding và phạm vi đo ảnh hưởng đến thứ hạng phương pháp. Kết luận được giới hạn trong tập dữ liệu và cấu hình khảo sát; các hạn chế về dữ liệu, đo lường và khả năng tái lập được trình bày riêng.
+Bài toán Sudoku tổng quát trên ma trận kích thước $N \times N$ ($4\times4, 9\times9, 16\times16$) là bài toán thuộc lớp NP-complete kinh điển, mang tính chất đại diện tiêu biểu cho các bài toán thỏa mãn ràng buộc (CSP) và giải đố logic. Báo cáo bài tập lớn này tập trung tìm hiểu, thiết kế và đánh giá thực nghiệm các kỹ thuật mã hóa mệnh đề logic (SAT Encoding) cho các ràng buộc số lượng (Cardinality Constraints), đặc biệt là ràng buộc At-Most-One (AMO), At-Least-One (ALO) và Exactly-One (EO). Nội dung thực hiện triển khai thực nghiệm 5 kỹ thuật mã hóa AMO: \textit{Pairwise (Naive)}, \textit{Binary (Bitwise)}, \textit{Commander (Klieber \& Kwon, 2007)}, \textit{2-Product (Jingchao Chen, 2010)}, và \textit{Sequential Counter (Carsten Sinz, 2005)}. Hiệu năng của SAT Solver (\textit{Glucose3} thông qua thư viện PySAT) được đặt trong mối tương quan so sánh đối chứng toàn diện với các công cụ giải chính xác hàng đầu thế giới thuộc hai trường phái Constraint Programming (CP) và Integer Linear Programming (ILP/MIP): \textit{Google OR-Tools CP-SAT}, \textit{IBM CPLEX CP Optimizer}, \textit{Gurobi Optimizer (MIP)}, \textit{IBM CPLEX MIP}, và \textit{PuLP (CBC)}. Thực nghiệm được tiến hành trên tập dữ liệu chuẩn hóa gồm 299 câu đố với đa dạng kích thước ($4\times4, 9\times9, 16\times16$) và 4 cấp độ khó (\textit{Easy, Medium, Hard, Expert}) thu thập từ các kho dữ liệu quốc tế như Peter Norvig Benchmark, Sudoku Exchange Puzzle Bank. Kết quả thực nghiệm cho thấy quy luật sinh biến phụ, số lượng mệnh đề CNF, tính hiệu quả của cơ chế unit propagation và lợi thế về tốc độ của phương pháp SAT cho bài toán Sudoku so với các bộ giải tối ưu hóa truyền thống (CP, ILP/MIP).
 \end{abstract}
 
 \begin{keywords}
@@ -81,6 +81,8 @@ Sudoku Solver \sep SAT Encoding \sep AMO Constraints \sep Constraint Programming
 \section{Giới thiệu (Introduction)}
 Sudoku là bài toán điền giá trị vào bảng sao cho mỗi hàng, cột và khối con chứa các giá trị không lặp. Với bảng chuẩn $9\times9$, miền giá trị là $1$ đến $9$ và mỗi khối có kích thước $3\times3$. Bài toán có thể mở rộng sang bảng $N\times N$, với $N=k^2$ đối với khối vuông $k\times k$. Đây là một ví dụ phù hợp để khảo sát mô hình hóa bài toán thỏa mãn ràng buộc; Norvig trình bày cách giải bằng lan truyền ràng buộc và tìm kiếm \cite{norvig2006solving}.
 
+Bài toán quyết định Sudoku tổng quát, trong đó kích thước bảng không cố định mà là một phần của đầu vào, là NP-complete \cite{yato2003complexity}. Phát biểu này không áp dụng riêng cho một kích thước cố định như $9\times9$; các bảng $4\times4$, $9\times9$ và $16\times16$ trong báo cáo là những trường hợp thực nghiệm.
+
 SAT (Boolean Satisfiability Problem) xác định sự tồn tại của phép gán làm đúng công thức Boole. Các bộ giải hiện đại như Glucose sử dụng CDCL (Conflict-Driven Clause Learning) \cite{audemard2009predicting}. Khi áp dụng SAT cho Sudoku, bước quan trọng là chuyển các ràng buộc sang dạng chuẩn hội CNF (Conjunctive Normal Form). Báo cáo tập trung vào ALO (ít nhất một biến đúng), AMO (nhiều nhất một biến đúng) và EO (đúng một biến đúng).
 
 Đồng thời, bên cạnh tiếp cận bằng SAT, bài toán Sudoku còn có thể được mô hình hóa và giải quyết bằng các phương pháp toán học chính xác khác như:
@@ -89,10 +91,13 @@ SAT (Boolean Satisfiability Problem) xác định sự tồn tại của phép g
     \item \textbf{Integer Linear Programming (ILP / MIP)}: Sử dụng quy hoạch tuyến tính nguyên với các biến nhị phân $\{0, 1\}$, giải quyết bằng phương pháp nhánh cận (Branch-and-Bound) kết hợp vết cắt phẳng (Cutting Planes), tiêu biểu là Gurobi Optimizer \cite{gurobi2024optimizer}, IBM CPLEX MIP, và CBC Solver.
 \end{itemize}
 
+\subsection*{Nghiên cứu liên quan và phạm vi đóng góp}
+Các mã hóa ràng buộc đã được nghiên cứu trong các công trình về mã hóa mệnh đề \cite{frisch2005effective}, Sequential Counter \cite{sinz2005towards}, Commander \cite{klieber2007efficient} và 2-Product \cite{chen2010new}. PySAT cung cấp công cụ để xây dựng và thử nghiệm các mô hình SAT \cite{ignatiev2018pysat}. Báo cáo sử dụng các phương pháp đã có, không đề xuất mã hóa hay thuật toán giải mới. Đóng góp của bài tập lớn là tích hợp các phương pháp trong một hệ thống, đối chiếu quy mô CNF với công thức lý thuyết và khảo sát chi phí thực thi trên cùng đầu vào.
+
 Mục tiêu của bài tập lớn là:
 \begin{enumerate}
-    \item Xây dựng hệ thống giải Sudoku tích hợp năm kỹ thuật AMO, phân biệt phần tự cài đặt và phần sử dụng thư viện.
-    \item So sánh Glucose3 với năm cấu hình bộ giải CP và ILP/MIP trên cùng đầu vào.
+    \item Xây dựng hệ thống giải Sudoku tích hợp năm kỹ thuật mã hóa AMO, phân biệt phần tự cài đặt và phần sử dụng thư viện.
+    \item So sánh các cấu hình SAT dùng những mã hóa khác nhau với các bộ giải CP và ILP/MIP trên cùng đầu vào.
     \item Phân tích quy mô mô hình, thời gian thực thi và tính đúng đắn của nghiệm; nêu rõ phạm vi và giới hạn thực nghiệm.
 \end{enumerate}
 
@@ -108,10 +113,14 @@ x_{r,c,d} = \begin{cases}
 0 & \text{ngược lại}
 \end{cases}
 \end{equation}
-Số lượng biến Boole ban đầu cho bảng kích thước $N \times N$ là $N \times N \times N = N^3$ biến. Trong cài đặt mã nguồn, chỉ số biến (1-based index) được ánh xạ theo công thức song ánh:
+Mô hình sử dụng $N^3$ biến Boole cơ sở, mỗi biến tương ứng
+với một bộ $(r,c,d)$. Để đưa vào bộ giải SAT, các biến được
+đánh số từ $1$ đến $N^3$ theo ánh xạ:
 \begin{equation}
-\text{ID}(r, c, d) = N^2 \cdot r + N \cdot c + d \quad (1 \le \text{ID} \le N^3)
+    \text{ID}(r,c,d)=N^2r+Nc+d,
 \end{equation}
+với $0\le r,c<N$ và $1\le d\le N$.
+Các biến phụ của encoding AMO được cấp ID lớn hơn $N^3$.
 
 \subsection{Hệ thống ràng buộc của Sudoku}
 Một cấu hình Sudoku hợp lệ phải thỏa mãn đồng thời 5 nhóm ràng buộc logic sau:
@@ -170,7 +179,7 @@ Phương pháp tổ hợp cặp đôi cổ điển phát biểu rằng hai biế
 \end{itemize}
 
 \subsection{Binary Encoding (Bitwise Approach)}
-Phương pháp sử dụng $m=\lceil\log_2 n\rceil$ biến phụ $b_1,\dots,b_m$ để đánh số nhị phân các biến đầu vào; xem thảo luận về mã hóa mệnh đề trong \cite{frisch2005effective}. Biến $x_i$ tương ứng với mã của $i-1$. Khi $x_i=1$, các bit phụ phải nhận đúng mã này:
+Phương pháp sử dụng $m=\lceil\log_2 n\rceil$ biến phụ $b_1,\dots,b_m$ để đánh số nhị phân các biến đầu vào. Biến $x_i$ tương ứng với mã của $i-1$. Khi $x_i=1$, các bit phụ phải nhận đúng mã này:
 \begin{equation}
 \text{AMO}_{\text{bin}}(X) = \bigwedge_{i=1}^n \bigwedge_{j=1}^m \Big( \neg x_i \lor \ell(i, j) \Big)
 \end{equation}
@@ -299,7 +308,6 @@ Các lệnh trên minh họa cách sử dụng. Python từ 3.10 trở lên đư
 
 \subsection{Môi trường thực nghiệm \& Bộ dữ liệu Benchmark}
 \begin{itemize}
-    \item \textbf{Phần cứng}: Intel Core i5-1235U (thế hệ 12), 16 GB RAM, hệ điều hành Windows x64.
     \item \textbf{Môi trường phần mềm}: Python 3.14, thư viện PySAT (python-sat 1.9), OR-Tools 9.15, Gurobi 13.0, CPLEX 22.2 và PuLP 3.3.
     \item \textbf{Dữ liệu Benchmark}: 299 bản ghi trong \texttt{data/benchmark\_dataset.json}:
     \begin{itemize}
@@ -310,7 +318,7 @@ Các lệnh trên minh họa cách sử dụng. Python từ 3.10 trở lên đư
 \end{itemize}
 
 \subsection{Nguồn, chuẩn hóa và đặc điểm dữ liệu}
-Snapshot có 131 bản ghi Norvig (70 top95, 50 easy50, 11 hardest), 148 bản ghi Sudoku Exchange (43 easy, mỗi nhóm medium/hard/diabolical có 35), và 20 bản ghi tự sinh. KaggleHub và Hugging Face là các nguồn loader hỗ trợ tùy chọn, không có bản ghi trong snapshot thực nghiệm hiện tại. Các nguồn trực tuyến được tham khảo tại \url{https://norvig.com/sudoku.html} và \url{https://github.com/grantm/sudoku-exchange-puzzle-bank}.
+Snapshot có 131 bản ghi Norvig (70 top95, 50 easy50, 11 hardest), 148 bản ghi Sudoku Exchange (43 easy, mỗi nhóm medium/hard/diabolical có 35), và 20 bản ghi tự sinh. Các nguồn trực tuyến được tham khảo tại \url{https://norvig.com/sudoku.html} và \url{https://github.com/grantm/sudoku-exchange-puzzle-bank}.
 
 Schema thống nhất gồm \texttt{id}, \texttt{source}, \texttt{dataset}, \texttt{size}, \texttt{difficulty}, \texttt{clues\_count}, \texttt{puzzle\_string}, \texttt{grid} và các trường nghiệm tùy chọn. Ô trống có giá trị 0; chuỗi dùng ký hiệu chữ cho các giá trị lớn hơn 9. Snapshot hiện chưa có đáp án chuẩn trong trường \texttt{solution\_grid}; tính hợp lệ được kiểm tra bằng luật Sudoku thay vì đối chiếu đáp án lưu sẵn.
 
@@ -323,7 +331,9 @@ Benchmark encoding đo riêng thời gian sinh CNF và thời gian gọi \texttt
 
 Các bảng và hình $9\times9$ cùng thời gian case study trình bày số liệu đã ghi nhận nhưng chưa có đủ dữ liệu thô để xác minh độc lập toàn bộ kết quả. Riêng thực nghiệm bổ sung $16\times16$ ở Mục~\ref{sec:large-solvers} có CSV/JSON chi tiết và thông tin môi trường đi kèm. Hai nhóm kết quả được phân biệt về nguồn gốc; lượt đo mới không được dùng để xác nhận lại các thời gian cũ. Quy mô CNF có thể đối chiếu bằng công thức và đầu vào.
 
-\subsection{Đánh giá quy mô mô hình SAT Encodings (Variables vs Clauses)}
+Các thời gian $9\times9$ và case study được sử dụng như số liệu khảo sát, không phải bằng chứng về thứ hạng ổn định. Báo cáo không có đủ dữ liệu đo lặp để tính khoảng tin cậy hoặc kiểm định ý nghĩa của các chênh lệch nhỏ; việc trình bày hai chữ số thập phân chỉ là quy ước làm tròn, không hàm ý độ chính xác tương ứng của phép đo.
+
+\subsection{Đánh giá quy mô mô hình SAT Encodings (Variables và Clauses)}
 \label{sec:exp-scale}
 Bảng~\ref{tab:cnf_scale} trình bày hai nhóm kích thước; Hình~\ref{fig:encodings} chỉ dùng nhóm $9\times9$. Với $g$ gợi ý và $a(N)$ mệnh đề AMO mỗi nhóm, tổng CNF là $4N^2[1+a(N)]+g$. Số mệnh đề trung bình được làm tròn đến số nguyên.
 
@@ -413,13 +423,14 @@ ILP (PuLP / CBC) & ILP / Branch-and-Cut & 147.10 & 100\% \\
 \begin{enumerate}
     \item \textbf{Các cấu hình SAT}: Thời gian trung bình nằm trong khoảng $10.67$--$16.91\text{ ms}$. Commander và Product có kết quả khá gần nhau ($10.67$ và $10.90\text{ ms}$), nên có thể xem chúng là hai lựa chọn đáng chú ý trong phép đo này, thay vì nhấn mạnh thứ hạng từ một chênh lệch nhỏ.
     \item \textbf{Đối chiếu với CP và MIP}: Gurobi ($17.38\text{ ms}$) và CP-SAT ($19.01\text{ ms}$) có thời gian cùng bậc độ lớn với nhóm SAT; Gurobi khá gần SAT Binary ($16.91\text{ ms}$). CPLEX MIP, CP Optimizer và CBC có thời gian cao hơn trong bảng, nhưng đều được ghi nhận tìm được nghiệm hợp lệ trên tập khảo sát. Kết quả cho thấy cả ba hướng mô hình hóa đều sử dụng được cho các đề $9\times9$ này, với chi phí thực thi khác nhau.
-    \item \textbf{Liên hệ với phép đo encoding}: Product có kết quả thuận lợi khi xét riêng mã hóa cộng gọi giải ở Mục~6.5, còn Commander có giá trị trung bình thấp hơn một chút khi đo toàn bộ hàm giải. Hai quan sát này không mâu thuẫn: phép đo toàn bộ còn tính khởi tạo solver, nạp CNF và giải mã. Việc chọn encoding vì thế nên gắn với công đoạn hoặc mục tiêu sử dụng cần quan tâm.
+    \item \textbf{Liên hệ với phép đo mã hóa}: Product có kết quả thuận lợi khi xét riêng mã hóa cộng gọi giải ở Mục~\ref{sec:exp-scale}, còn Commander có giá trị trung bình thấp hơn một chút khi đo toàn bộ hàm giải. Hai quan sát này không mâu thuẫn: phép đo toàn bộ còn tính khởi tạo bộ giải, nạp CNF và giải mã. Việc chọn mã hóa vì thế nên gắn với công đoạn hoặc mục tiêu sử dụng cần quan tâm.
     \item \textbf{Cách đọc chênh lệch thời gian}: CBC có khoảng cách rõ hơn so với các cấu hình còn lại, trong khi một số cặp solver chỉ chênh vài mili-giây. Các giá trị phản ánh đồng thời cách dựng mô hình, lớp giao tiếp Python và bộ máy giải, nên phù hợp để so sánh các cài đặt trong dự án hơn là đánh giá riêng thuật toán bên trong từng solver. Đo lặp và tách thời gian dựng mô hình khỏi tìm kiếm sẽ giúp làm rõ hơn những khác biệt này.
 \end{enumerate}
 
 \subsection{So sánh các bộ giải trên Sudoku $16\times16$}
 \label{sec:large-solvers}
-Để bổ sung đánh giá ở kích thước lớn hơn, hệ thống được chạy trên toàn bộ 10 đề $16\times16$ trong snapshot. Mỗi cặp đề--cấu hình được đo một lần theo thứ tự cố định, tính toàn bộ hàm giải và kiểm tra nghiệm bên ngoài timer. Lượt chạy sử dụng Intel Core i5-1235U, khoảng 16 GB RAM, Windows 11, Python 3.14.5; các gói chính là python-sat 1.9.dev15, OR-Tools 9.15.6755, PuLP 3.3.2, Gurobi 13.0.3, CPLEX 22.2.0.1 và DOcplex 2.32.264. Mã nguồn tương ứng commit \texttt{06a6864}; cấu hình đầy đủ, checksum dữ liệu và kết quả từng đề được lưu trong \texttt{reports/submission\_16x16/}.
+Để bổ sung đánh giá ở kích thước lớn hơn, hệ thống được chạy trên toàn bộ 10 đề $16\times16$ trong snapshot. Mỗi cặp đề--cấu hình được đo một lần theo thứ tự cố định, tính toàn bộ hàm giải và kiểm tra nghiệm bên ngoài timer. Các gói chính là python-sat 1.9.dev15, OR-Tools 9.15.6755, PuLP 3.3.2, Gurobi 13.0.3, CPLEX 22.2.0.1 và DOcplex 2.32.264. Mã nguồn tương ứng; cấu hình đầy đủ, checksum dữ liệu và kết quả từng đề được lưu trong \texttt{reports/submission\_16x16/}.
+Lượt đo này chưa warm-up hoặc đảo thứ tự cấu hình; số luồng, seed và timeout chưa được chuẩn hóa chung giữa các bộ giải. Vì vậy, thời gian phản ánh cả mô hình, cách cài đặt và cấu hình mặc định của từng công cụ, không tách riêng hiệu quả thuật toán bên trong bộ giải.
 
 \begin{table}[pos=!htbp]
 \centering
@@ -448,7 +459,7 @@ CPLEX MIP & N/A & N/A & 10/10 lỗi license \\
 \begin{itemize}
     \item Năm encoding SAT, CP-SAT, CBC và CP Optimizer đều trả nghiệm hợp lệ cho cả 10 đề. Product và Commander có thời gian trung bình tương đối thấp trong lượt đo; CP Optimizer cũng nằm gần nhóm này. Các khoảng min--max cho thấy chi phí khác nhau giữa các đề, nên trung bình chỉ tóm tắt một phần kết quả.
     \item CP-SAT và CBC có khoảng thời gian rộng hơn trong tập khảo sát. Ngoài cấu trúc đề, quá trình dựng mô hình và giao tiếp solver có thể góp phần vào khác biệt; phép đo hiện chưa tách các thành phần này. Do mỗi cấu hình chỉ chạy một lần trên từng đề, thứ hạng được xem là quan sát của lượt chạy thay vì kết luận ổn định.
-    \item Gurobi báo mô hình vượt giới hạn kích thước license. CPLEX MIP bản promotional giới hạn 1.000 biến và 1.000 ràng buộc, trong khi mô hình $16\times16$ có 4.096 biến và vượt giới hạn ràng buộc. Hai trường hợp được ghi N/A, không diễn giải thành đề vô nghiệm hay mô hình sai. Cần license phù hợp để hoàn tất so sánh hai bộ giải này ở kích thước lớn.
+    \item Gurobi báo mô hình vượt giới hạn kích thước license. CPLEX MIP bản promotional giới hạn 1.000 biến và 1.000 ràng buộc, trong khi mô hình $16\times16$ có 4.096 biến và vượt giới hạn ràng buộc. Hai trường hợp được ghi N/A, không diễn giải thành đề vô nghiệm hay mô hình sai.
     \item Tập $16\times16$ gồm đề tự sinh từ một nghiệm cơ sở, chưa đại diện cho mọi Hexadoku. Kết quả bổ sung bằng chứng chương trình xử lý được bảng lớn hơn, đồng thời cho thấy cần mở rộng dữ liệu và đo lặp nếu muốn phân tích hiệu năng sâu hơn.
 \end{itemize}
 
@@ -460,7 +471,7 @@ Các bảng và hình tổng hợp dùng tập con ghi tại chú thích, không
 \textbf{Phạm vi kiểm chứng.} Các đề được định danh cụ thể trong từng bảng. Thời gian case study là số liệu tham khảo đã ghi nhận; bộ mã và dữ liệu thô đi kèm chưa đủ để tái tạo việc chọn mẫu theo trung vị gợi ý hoặc xác nhận giao thức lấy cực tiểu 60 lần trong ba phiên. Do đó, các bảng không được dùng như ước lượng thời gian điển hình hay bằng chứng về độ ổn định. Số biến và mệnh đề có thể đối chiếu với đầu vào và công thức. Lấy cực tiểu nhiều lần cũng không bảo đảm loại bỏ hoàn toàn nhiễu.
 
 \subsection{Trường hợp theo kích thước bảng ($4\times4$, $9\times9$, $16\times16$)}
-Ba câu đố đại diện lần lượt là \texttt{matrix4x4\_0002} ($4\times4$, 4 gợi ý), \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý) và \texttt{hexadoku16x16\_0005} ($16\times16$, 77 gợi ý). Bảng~\ref{tab:case_size} tổng hợp quy mô CNF và thời gian tương ứng.
+Ba câu đố được chọn để minh họa lần lượt là \texttt{matrix4x4\_0002} ($4\times4$, 4 gợi ý), \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý) và \texttt{hexadoku16x16\_0005} ($16\times16$, 77 gợi ý). Bảng~\ref{tab:case_size} tổng hợp quy mô CNF và thời gian tương ứng; các đề này không được xem là mẫu đại diện thống kê cho từng kích thước.
 
 \begin{table}[pos=!htbp]
 \centering
@@ -501,7 +512,7 @@ Ba câu đố đại diện lần lượt là \texttt{matrix4x4\_0002} ($4\times
 \end{itemize}
 
 \subsection{Trường hợp theo cấp độ khó}
-Hai bảng~\ref{tab:case_diff} và \ref{tab:case_diff_solve} trình bày kết quả trên bốn câu đố $9\times9$ đại diện cho bốn cấp độ khó, với số gợi ý giảm dần từ $36$ (Easy) xuống $23$ (Expert).
+Hai bảng~\ref{tab:case_diff} và \ref{tab:case_diff_solve} trình bày kết quả minh họa trên bốn câu đố $9\times9$ mang nhãn Easy, Medium, Hard và Expert, với số gợi ý giảm từ $36$ xuống $23$. Mỗi nhãn chỉ có một đề trong case study nên không thể suy ra thời gian điển hình của cả nhóm.
 
 \begin{table}[pos=!htbp]
 \centering
@@ -550,17 +561,17 @@ Bảng~\ref{tab:case_enc} phân rã cấu trúc file CNF của câu đố $9\tim
 \begin{table}[pos=!htbp]
 \centering
 \small
-\caption{Phân rã cấu trúc CNF của câu đố \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý): $324$ ràng buộc Exactly-One ($4N^2$) tương ứng $324$ mệnh đề ALO, $26$ mệnh đề đơn nguyên từ gợi ý, phần còn lại là AMO.}
+\caption{Phân rã quy mô CNF của đề \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý). Mọi cấu hình có 729 biến cơ sở, 324 mệnh đề ALO và 26 mệnh đề gợi ý; tổng số biến, mệnh đề và thời gian đã trình bày ở Bảng~\ref{tab:case_size}.}
 \label{tab:case_enc}
-\begin{tabular}{@{}l r r r r r r r r@{}}
+\begin{tabular}{@{}l r r r@{}}
 \toprule
-\textbf{Phương pháp} & \textbf{Biến} & \textbf{Biến phụ} & \textbf{Mệnh đề} & \textbf{ALO} & \textbf{AMO} & \textbf{Gợi ý} & \textbf{Encode (ms)} & \textbf{Solve (ms)} \\
+\textbf{Phương pháp} & \textbf{Biến phụ} & \textbf{AMO mỗi nhóm} & \textbf{Tổng AMO} \\
 \midrule
-Pairwise (Naive) & 729 & 0 & 12,014 & 324 & 11,664 & 26 & 2.80 & 0.45 \\
-Binary (Bitwise) & 2,025 & 1,296 & 12,014 & 324 & 11,664 & 26 & 6.81 & 0.53 \\
-Commander & 1,701 & 972 & 8,126 & 324 & 7,776 & 26 & 3.05 & 0.43 \\
-2-Product & 2,673 & 1,944 & 8,126 & 324 & 7,776 & 26 & 2.50 & 0.43 \\
-Sequential Counter & 3,321 & 2,592 & 7,802 & 324 & 7,452 & 26 & 5.50 & 0.38 \\
+Pairwise & 0 & 36 & 11,664 \\
+Binary & 1,296 & 36 & 11,664 \\
+Commander & 972 & 24 & 7,776 \\
+2-Product & 1,944 & 24 & 7,776 \\
+Sequential Counter & 2,592 & 23 & 7,452 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -616,6 +627,11 @@ Bảng~\ref{tab:case_grid} minh họa đề có 26 gợi ý và một nghiệm h
 \end{tabular}
 \end{minipage}
 \end{table}
+
+\subsection*{Giới hạn và hướng kiểm chứng tiếp theo}
+Các giới hạn chính gồm: (i) dữ liệu còn trùng đề, nhãn độ khó chưa đồng nhất và nhóm $16\times16$ nhỏ, được sinh từ một nghiệm cơ sở; (ii) số liệu thời gian cũ thiếu dữ liệu thô để xác minh đầy đủ, còn lượt đo bổ sung chưa có đo lặp và kiểm soát thống nhất cấu hình bộ giải; (iii) các phép đo chịu ảnh hưởng của dựng mô hình và giao tiếp thư viện; (iv) kiểm tra nghiệm chưa chứng minh tính duy nhất. Do đó, báo cáo không kết luận quan hệ nhân quả giữa số mệnh đề, lan truyền đơn vị và tốc độ, cũng không khẳng định một phương pháp luôn tốt nhất.
+
+Để kiểm chứng sâu hơn, cần làm sạch snapshot, bổ sung đề độc lập, lưu dữ liệu từng lần chạy, warm-up và đảo thứ tự cấu hình; đồng thời công bố số luồng, seed, timeout, trung vị, độ phân tán và phạm vi timer. Các bước này là hướng phát triển, chưa phải thực nghiệm đã thực hiện trong báo cáo.
 
 \section{Kết luận và Hướng phát triển (Conclusion)}
 Bài tập lớn xây dựng hệ thống Sudoku bằng SAT và tích hợp CP/MIP để so sánh. Pairwise, Commander và Product được tự cài đặt; Binary và Sequential Counter sử dụng PySAT. Công thức CNF thể hiện sự đánh đổi giữa biến phụ và mệnh đề khi tăng kích thước.

@@ -16,7 +16,6 @@ from typing import List, Tuple
 
 
 def amo_commander(lits: List[int], top_id: int, k: int = 3) -> Tuple[List[List[int]], int]:
-    """Tạo mệnh đề AMO theo phương pháp Commander."""
     n = len(lits)
     if n <= 1:
         return [], top_id

@@ -15,7 +15,6 @@ from pysat.card import CardEnc, EncType
 
 
 def amo_seqcounter(lits: List[int], top_id: int) -> Tuple[List[List[int]], int]:
-    """Tạo mệnh đề AMO theo phương pháp Sequential Counter qua PySAT."""
     n = len(lits)
     if n <= 1:
         return [], top_id

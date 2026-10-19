@@ -18,7 +18,6 @@ from typing import List, Tuple
 
 
 def amo_product(lits: List[int], top_id: int) -> Tuple[List[List[int]], int]:
-    """Tạo mệnh đề AMO theo phương pháp 2-Product."""
     n = len(lits)
     if n <= 1:
         return [], top_id
