@@ -321,7 +321,7 @@ Hai bản ghi \texttt{norvig\_easy50\_0009} và \texttt{norvig\_easy50\_0041} tr
 \subsection{Định nghĩa phép đo và phạm vi số liệu}
 Benchmark encoding đo riêng thời gian sinh CNF và thời gian gọi \texttt{solver.solve()}; tổng là tổng hai pha này, không gồm khởi tạo solver, nạp CNF, giải mã hoặc kiểm tra nghiệm. Benchmark solver đo toàn bộ lời gọi hàm giải, bao gồm dựng mô hình và các chi phí nằm trong wrapper, nhưng không gồm bước kiểm tra nghiệm bên ngoài. Vì vậy hai loại thời gian không thể so sánh trực tiếp.
 
-Các bảng thời gian và hình trình bày số liệu thực nghiệm đã ghi nhận. Mã hỗ trợ xuất CSV/JSON và kiểm tra nghiệm, nhưng bộ kết quả đi kèm chưa có đủ dữ liệu thô để xác minh độc lập toàn bộ thời gian và tỷ lệ thành công. Vì vậy, các con số được sử dụng ở mức mô tả, chưa phải kết quả tái lập độc lập. Quy mô CNF có thể đối chiếu bằng công thức và đầu vào.
+Các bảng và hình $9\times9$ cùng thời gian case study trình bày số liệu đã ghi nhận nhưng chưa có đủ dữ liệu thô để xác minh độc lập toàn bộ kết quả. Riêng thực nghiệm bổ sung $16\times16$ ở Mục~\ref{sec:large-solvers} có CSV/JSON chi tiết và thông tin môi trường đi kèm. Hai nhóm kết quả được phân biệt về nguồn gốc; lượt đo mới không được dùng để xác nhận lại các thời gian cũ. Quy mô CNF có thể đối chiếu bằng công thức và đầu vào.
 
 \subsection{Đánh giá quy mô mô hình SAT Encodings (Variables vs Clauses)}
 \label{sec:exp-scale}
@@ -416,6 +416,41 @@ ILP (PuLP / CBC) & ILP / Branch-and-Cut & 147.10 & 100\% \\
     \item \textbf{Liên hệ với phép đo encoding}: Product có kết quả thuận lợi khi xét riêng mã hóa cộng gọi giải ở Mục~6.5, còn Commander có giá trị trung bình thấp hơn một chút khi đo toàn bộ hàm giải. Hai quan sát này không mâu thuẫn: phép đo toàn bộ còn tính khởi tạo solver, nạp CNF và giải mã. Việc chọn encoding vì thế nên gắn với công đoạn hoặc mục tiêu sử dụng cần quan tâm.
     \item \textbf{Cách đọc chênh lệch thời gian}: CBC có khoảng cách rõ hơn so với các cấu hình còn lại, trong khi một số cặp solver chỉ chênh vài mili-giây. Các giá trị phản ánh đồng thời cách dựng mô hình, lớp giao tiếp Python và bộ máy giải, nên phù hợp để so sánh các cài đặt trong dự án hơn là đánh giá riêng thuật toán bên trong từng solver. Đo lặp và tách thời gian dựng mô hình khỏi tìm kiếm sẽ giúp làm rõ hơn những khác biệt này.
 \end{enumerate}
+
+\subsection{So sánh các bộ giải trên Sudoku $16\times16$}
+\label{sec:large-solvers}
+Để bổ sung đánh giá ở kích thước lớn hơn, hệ thống được chạy trên toàn bộ 10 đề $16\times16$ trong snapshot. Mỗi cặp đề--cấu hình được đo một lần theo thứ tự cố định, tính toàn bộ hàm giải và kiểm tra nghiệm bên ngoài timer. Lượt chạy sử dụng Intel Core i5-1235U, khoảng 16 GB RAM, Windows 11, Python 3.14.5; các gói chính là python-sat 1.9.dev15, OR-Tools 9.15.6755, PuLP 3.3.2, Gurobi 13.0.3, CPLEX 22.2.0.1 và DOcplex 2.32.264. Mã nguồn tương ứng commit \texttt{06a6864}; cấu hình đầy đủ, checksum dữ liệu và kết quả từng đề được lưu trong \texttt{reports/submission\_16x16/}.
+
+\begin{table}[pos=!htbp]
+\centering
+\small
+\caption{Một lượt đo trên 10 đề Sudoku $16\times16$. Min--max là khoảng thời gian giữa các đề khác nhau, không phải biến thiên qua nhiều lần đo cùng đề. N/A: không có thời gian giải do giới hạn license.}
+\label{tab:large_solvers}
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+\textbf{Cấu hình} & \textbf{TB (ms)} & \textbf{Min--max (ms)} & \textbf{Kết quả} \\
+\midrule
+SAT Pairwise & 108.17 & 66.17--159.95 & 10/10 nghiệm hợp lệ \\
+SAT Binary & 77.05 & 43.63--115.79 & 10/10 nghiệm hợp lệ \\
+SAT Commander & 56.79 & 35.61--111.68 & 10/10 nghiệm hợp lệ \\
+SAT Product & 52.85 & 27.95--122.33 & 10/10 nghiệm hợp lệ \\
+SAT Sequential Counter & 65.02 & 36.69--111.30 & 10/10 nghiệm hợp lệ \\
+OR-Tools CP-SAT & 139.57 & 21.66--276.75 & 10/10 nghiệm hợp lệ \\
+PuLP/CBC & 934.46 & 235.95--1434.56 & 10/10 nghiệm hợp lệ \\
+Gurobi MIP & N/A & N/A & 10/10 lỗi license \\
+CPLEX CP Optimizer & 61.24 & 42.43--98.52 & 10/10 nghiệm hợp lệ \\
+CPLEX MIP & N/A & N/A & 10/10 lỗi license \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Nhận xét}:
+\begin{itemize}
+    \item Năm encoding SAT, CP-SAT, CBC và CP Optimizer đều trả nghiệm hợp lệ cho cả 10 đề. Product và Commander có thời gian trung bình tương đối thấp trong lượt đo; CP Optimizer cũng nằm gần nhóm này. Các khoảng min--max cho thấy chi phí khác nhau giữa các đề, nên trung bình chỉ tóm tắt một phần kết quả.
+    \item CP-SAT và CBC có khoảng thời gian rộng hơn trong tập khảo sát. Ngoài cấu trúc đề, quá trình dựng mô hình và giao tiếp solver có thể góp phần vào khác biệt; phép đo hiện chưa tách các thành phần này. Do mỗi cấu hình chỉ chạy một lần trên từng đề, thứ hạng được xem là quan sát của lượt chạy thay vì kết luận ổn định.
+    \item Gurobi báo mô hình vượt giới hạn kích thước license. CPLEX MIP bản promotional giới hạn 1.000 biến và 1.000 ràng buộc, trong khi mô hình $16\times16$ có 4.096 biến và vượt giới hạn ràng buộc. Hai trường hợp được ghi N/A, không diễn giải thành đề vô nghiệm hay mô hình sai. Cần license phù hợp để hoàn tất so sánh hai bộ giải này ở kích thước lớn.
+    \item Tập $16\times16$ gồm đề tự sinh từ một nghiệm cơ sở, chưa đại diện cho mọi Hexadoku. Kết quả bổ sung bằng chứng chương trình xử lý được bảng lớn hơn, đồng thời cho thấy cần mở rộng dữ liệu và đo lặp nếu muốn phân tích hiệu năng sâu hơn.
+\end{itemize}
 
 \section{Nghiên cứu trường hợp thực nghiệm (Experimental Case Studies)}
 \label{sec:cases}
@@ -585,12 +620,12 @@ Bảng~\ref{tab:case_grid} minh họa đề có 26 gợi ý và một nghiệm h
 \section{Kết luận và Hướng phát triển (Conclusion)}
 Bài tập lớn xây dựng hệ thống Sudoku bằng SAT và tích hợp CP/MIP để so sánh. Pairwise, Commander và Product được tự cài đặt; Binary và Sequential Counter sử dụng PySAT. Công thức CNF thể hiện sự đánh đổi giữa biến phụ và mệnh đề khi tăng kích thước.
 
-Trong số liệu đã ghi nhận, Product có chi phí hai pha thấp ở nhiều cấu hình, còn Commander có thời gian toàn bộ hàm giải trung bình thấp nhất ở bảng $9\times9$. Không có encoding tốt nhất độc lập với tiêu chí đo, kích thước và cài đặt. Kết quả chưa chứng minh ưu thế tổng quát của SAT trước CP/MIP.
+Trong số liệu đã ghi nhận, Product có chi phí hai pha thấp ở nhiều cấu hình, còn Commander có thời gian toàn bộ hàm giải trung bình thấp nhất ở bảng $9\times9$. Thực nghiệm bổ sung trên 10 đề $16\times16$ cho nghiệm hợp lệ với năm encoding SAT, CP-SAT, CBC và CP Optimizer; Gurobi và CPLEX MIP cần license cho mô hình lớn hơn. Không có encoding tốt nhất độc lập với tiêu chí đo, kích thước và cài đặt. Kết quả chưa chứng minh ưu thế tổng quát của SAT trước CP/MIP.
 
 Hướng phát triển gần nhất là hoàn thiện kiểm tra đầu vào, khử trùng dữ liệu, kiểm tra duy nhất, bổ sung đo lặp và dữ liệu thô. Sau đó có thể khảo sát Diagonal hoặc Killer Sudoku bằng ràng buộc phù hợp; SMT và MaxSAT là hướng bổ sung, không bắt buộc cho mọi biến thể.
 
 \section*{Tính sẵn có của mã nguồn và dữ liệu (Data Availability)}
-Mã nguồn, snapshot 299 bản ghi, script benchmark và biểu đồ được lưu tại dự án dưới đây.
+Mã nguồn, snapshot 299 bản ghi, script benchmark và biểu đồ được lưu tại dự án dưới đây. Dữ liệu thô của lượt đo $16\times16$ gồm \texttt{solvers.csv}, \texttt{solvers.json}, thông tin môi trường \texttt{environment.json} và hướng dẫn chạy lại trong \texttt{reports/submission\_16x16/}. Các tệp giữ cả kết quả hợp lệ lẫn thông báo lỗi license để người đọc đối chiếu Bảng~\ref{tab:large_solvers}.
 \begin{center}
 \url{https://github.com/nmson8206/Sudoku_prj}
 \end{center}

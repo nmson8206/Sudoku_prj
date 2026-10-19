@@ -1,0 +1,53 @@
+{
+  "source_commit": "06a6864aaed024109dd466fd819bc70b869d474a",
+  "recorded_at_local": "2026-10-19T11:41:35.684524+07:00",
+  "command": "python main.py --benchmark-dataset-solvers --size 16 --output-csv reports/submission_16x16/solvers.csv --output-json reports/submission_16x16/solvers.json",
+  "original_output_location": "session scratch; result files copied without changing their contents",
+  "dataset_path": "data/benchmark_dataset.json",
+  "dataset_sha256": "164fc664ec21a42a4b566fb61cb07badad025f429a4c177bd30fafef3f737d48",
+  "puzzle_ids": [
+    "hexadoku16x16_0001",
+    "hexadoku16x16_0002",
+    "hexadoku16x16_0003",
+    "hexadoku16x16_0004",
+    "hexadoku16x16_0005",
+    "hexadoku16x16_0006",
+    "hexadoku16x16_0007",
+    "hexadoku16x16_0008",
+    "hexadoku16x16_0009",
+    "hexadoku16x16_0010"
+  ],
+  "python": "3.14.5",
+  "os": "Windows-11-10.0.26200-SP0",
+  "cpu": "12th Gen Intel(R) Core(TM) i5-1235U",
+  "physical_cores": 10,
+  "logical_processors": 12,
+  "physical_memory_bytes": 16849293312,
+  "packages": {
+    "python-sat": "1.9.dev15",
+    "ortools": "9.15.6755",
+    "pulp": "3.3.2",
+    "gurobipy": "13.0.3",
+    "cplex": "22.2.0.1",
+    "docplex": "2.32.264"
+  },
+  "protocol": {
+    "runs_per_puzzle_solver": 1,
+    "puzzles": 10,
+    "solver_configurations": 10,
+    "warmup": false,
+    "order": "fixed, as implemented in benchmark_dataset_solvers",
+    "timing_scope": "entire solver wrapper; validation outside timer",
+    "threads_seed_timeout": "not explicitly standardized by benchmark"
+  },
+  "validation": {
+    "records": 100,
+    "valid": 80,
+    "exceptions": 20
+  },
+  "limitations": [
+    "Single-run results; min/max describe different puzzles, not repeat-run variability.",
+    "Gurobi and CPLEX MIP exceeded size-limited licenses; these are environment errors, not infeasibility results.",
+    "JSON summary omits solvers with no timing samples; their errors are retained in details and CSV."
+  ]
+}

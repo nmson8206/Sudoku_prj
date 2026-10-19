@@ -43,7 +43,7 @@ Sudoku_prj/
 │   ├── benchmark_solvers.py     # So sánh tất cả các Solver trên ma trận mẫu
 │   └── benchmark_encodings.py   # So sánh 5 phương pháp SAT Encoding trên ma trận mẫu
 │
-├── reports/                     # Kết quả xuất PNG/CSV/JSON; hiện đóng gói các biểu đồ PNG
+├── reports/                     # Biểu đồ và kết quả CSV/JSON, gồm thực nghiệm submission_16x16/
 ├── report/                      # Báo cáo LaTeX (main.tex → main.pdf) & hình minh họa thực nghiệm
 ├── tests/                       # Hệ thống kiểm thử tự động
 │   ├── __init__.py
@@ -272,7 +272,7 @@ benchmark_dataset_solvers(puzzles=puzzles, plot=True)
 - **Benchmark solver:** đo toàn bộ hàm giải, gồm dựng mô hình và các chi phí trong wrapper; không tính kiểm tra nghiệm bên ngoài. Vì vậy, thời gian hai loại benchmark không so sánh trực tiếp được.
 - Benchmark dataset kiểm tra nghiệm theo luật Sudoku và gợi ý. Hiện đo một lần cho mỗi cặp đề–phương pháp, theo thứ tự cố định; chưa có warm-up, khoảng tin cậy hoặc cấu hình timeout/số luồng/seed thống nhất giữa các solver.
 - Các exception được ghi nhận là lỗi và không có thời gian; các bản ghi này bị loại khỏi trung bình. Hãy đọc đồng thời tỷ lệ nghiệm hợp lệ và số lần lỗi, không xếp hạng chỉ bằng thời gian.
-- `reports/` hiện đóng gói các biểu đồ PNG, chưa có đủ CSV/JSON thô để tái lập độc lập số liệu thời gian cũ. Để lưu kết quả lần chạy mới, dùng `--csv --json --timestamp` và ghi lại lệnh, phiên bản thư viện cùng cấu hình máy.
+- [Thực nghiệm 16×16](reports/submission_16x16/README.md) có CSV/JSON của 100 bản ghi đề–solver, phiên bản môi trường, checksum dataset và lệnh chạy lại. Có 80 nghiệm hợp lệ; 20 lỗi từ Gurobi/CPLEX MIP là giới hạn license, không phải kết quả vô nghiệm. Đây là một lượt đo, chưa có khoảng tin cậy. Dữ liệu mới không xác minh lại thời gian 9×9 hoặc case study cũ. Để lưu lần chạy khác, dùng tên tệp mới hoặc `--csv --json --timestamp`.
 - Case study trong báo cáo có thời gian tham khảo đã ghi nhận; repository chưa cung cấp đủ script và dữ liệu thô xác nhận giao thức cực tiểu 60 lần qua ba phiên. Không coi đó là quy trình đã được các script benchmark hiện tại tự động thực hiện.
 - Dữ liệu trùng, dữ liệu tự sinh, nhãn không đồng nhất và kiểm tra đầu vào chưa đầy đủ là các giới hạn hiện có. Kết quả không chứng minh ưu thế tổng quát của SAT trước CP/MIP.
 
@@ -281,3 +281,4 @@ benchmark_dataset_solvers(puzzles=puzzles, plot=True)
 - **Repository:** [https://github.com/nmson8206/Sudoku_prj](https://github.com/nmson8206/Sudoku_prj)
 - **Báo cáo:** [PDF](report/main.pdf) · [LaTeX](report/main.tex)
 - **Snapshot dữ liệu:** [data/benchmark_dataset.json](data/benchmark_dataset.json)
+- **Kết quả thô 16×16:** [Hướng dẫn và bảng tổng hợp](reports/submission_16x16/README.md) · [CSV](reports/submission_16x16/solvers.csv) · [JSON](reports/submission_16x16/solvers.json) · [Môi trường](reports/submission_16x16/environment.json)

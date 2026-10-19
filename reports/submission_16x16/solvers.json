@@ -1,0 +1,774 @@
+{
+  "summary": {
+    "SAT (Glucose3 - Pairwise)": {
+      "avg_ms": 108.17398000008325,
+      "min_ms": 66.1684000006062,
+      "max_ms": 159.9543000002086,
+      "success_ratio": "10/10"
+    },
+    "SAT (Glucose3 - Binary)": {
+      "avg_ms": 77.0451299999877,
+      "min_ms": 43.63499999999476,
+      "max_ms": 115.78719999943132,
+      "success_ratio": "10/10"
+    },
+    "SAT (Glucose3 - Commander)": {
+      "avg_ms": 56.79262999992716,
+      "min_ms": 35.605000000032305,
+      "max_ms": 111.67939999995724,
+      "success_ratio": "10/10"
+    },
+    "SAT (Glucose3 - Product)": {
+      "avg_ms": 52.85415999996985,
+      "min_ms": 27.953200000411016,
+      "max_ms": 122.33250000008411,
+      "success_ratio": "10/10"
+    },
+    "SAT (Glucose3 - SeqCounter)": {
+      "avg_ms": 65.01549999993586,
+      "min_ms": 36.68669999933627,
+      "max_ms": 111.29879999953118,
+      "success_ratio": "10/10"
+    },
+    "CP-SAT (Google OR-Tools)": {
+      "avg_ms": 139.57296999997197,
+      "min_ms": 21.659900000486232,
+      "max_ms": 276.74990000014077,
+      "success_ratio": "10/10"
+    },
+    "ILP (PuLP / CBC)": {
+      "avg_ms": 934.4609100000525,
+      "min_ms": 235.9545999997863,
+      "max_ms": 1434.561300000496,
+      "success_ratio": "10/10"
+    },
+    "CPLEX CP (IBM CPO)": {
+      "avg_ms": 61.24036999990494,
+      "min_ms": 42.43490000044403,
+      "max_ms": 98.51919999982783,
+      "success_ratio": "10/10"
+    }
+  },
+  "details": [
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 120.359,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 46.984,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 39.307,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 32.587,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 77.156,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 25.572,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 283.413,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 49.021,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0001",
+      "difficulty": "easy",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1165 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 66.168,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 83.883,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 35.605,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 27.953,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 36.687,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 21.66,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 235.955,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 42.435,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0002",
+      "difficulty": "easy",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1147 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 103.805,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 43.635,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 37.273,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 28.759,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 36.818,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 59.193,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 753.986,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 52.623,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0003",
+      "difficulty": "medium",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1127 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 96.154,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 75.507,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 48.282,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 88.368,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 56.923,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 106.699,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 1046.381,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 98.519,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0004",
+      "difficulty": "medium",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1114 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 97.801,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 115.787,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 67.507,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 44.922,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 60.032,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 165.949,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 1062.22,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 69.448,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0005",
+      "difficulty": "hard",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1101 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 155.278,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 68.966,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 59.806,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 48.892,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 111.299,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 142.259,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 997.195,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 61.389,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0006",
+      "difficulty": "hard",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1096 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 106.256,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 72.809,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 111.679,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 49.582,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 65.679,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 225.713,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 1021.953,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 60.287,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0007",
+      "difficulty": "expert",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1088 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 159.954,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 75.075,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 58.907,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 48.024,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 67.56,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 222.625,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 1114.257,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 50.004,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0008",
+      "difficulty": "expert",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1081 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 95.456,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 73.242,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 66.499,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 122.333,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 86.559,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 276.75,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 1394.688,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 73.481,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0009",
+      "difficulty": "expert",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1076 consts, CPLEX code=1016"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Pairwise)",
+      "time_ms": 80.509,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Binary)",
+      "time_ms": 114.563,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Commander)",
+      "time_ms": 43.061,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - Product)",
+      "time_ms": 37.121,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "SAT (Glucose3 - SeqCounter)",
+      "time_ms": 51.443,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "CP-SAT (Google OR-Tools)",
+      "time_ms": 149.309,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "ILP (PuLP / CBC)",
+      "time_ms": 1434.561,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "Gurobi (MIP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information"
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "CPLEX CP (IBM CPO)",
+      "time_ms": 55.196,
+      "is_valid": true
+    },
+    {
+      "puzzle_id": "hexadoku16x16_0010",
+      "difficulty": "expert",
+      "solver_name": "CPLEX MIP (IBM MP)",
+      "time_ms": null,
+      "is_valid": false,
+      "error": "**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1071 consts, CPLEX code=1016"
+    }
+  ]
+}

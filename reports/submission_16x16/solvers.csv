@@ -1,0 +1,101 @@
+﻿puzzle_id,difficulty,solver_name,time_ms,is_valid,error
+hexadoku16x16_0001,easy,SAT (Glucose3 - Pairwise),120.359,True,
+hexadoku16x16_0001,easy,SAT (Glucose3 - Binary),46.984,True,
+hexadoku16x16_0001,easy,SAT (Glucose3 - Commander),39.307,True,
+hexadoku16x16_0001,easy,SAT (Glucose3 - Product),32.587,True,
+hexadoku16x16_0001,easy,SAT (Glucose3 - SeqCounter),77.156,True,
+hexadoku16x16_0001,easy,CP-SAT (Google OR-Tools),25.572,True,
+hexadoku16x16_0001,easy,ILP (PuLP / CBC),283.413,True,
+hexadoku16x16_0001,easy,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0001,easy,CPLEX CP (IBM CPO),49.021,True,
+hexadoku16x16_0001,easy,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1165 consts, CPLEX code=1016"
+hexadoku16x16_0002,easy,SAT (Glucose3 - Pairwise),66.168,True,
+hexadoku16x16_0002,easy,SAT (Glucose3 - Binary),83.883,True,
+hexadoku16x16_0002,easy,SAT (Glucose3 - Commander),35.605,True,
+hexadoku16x16_0002,easy,SAT (Glucose3 - Product),27.953,True,
+hexadoku16x16_0002,easy,SAT (Glucose3 - SeqCounter),36.687,True,
+hexadoku16x16_0002,easy,CP-SAT (Google OR-Tools),21.66,True,
+hexadoku16x16_0002,easy,ILP (PuLP / CBC),235.955,True,
+hexadoku16x16_0002,easy,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0002,easy,CPLEX CP (IBM CPO),42.435,True,
+hexadoku16x16_0002,easy,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1147 consts, CPLEX code=1016"
+hexadoku16x16_0003,medium,SAT (Glucose3 - Pairwise),103.805,True,
+hexadoku16x16_0003,medium,SAT (Glucose3 - Binary),43.635,True,
+hexadoku16x16_0003,medium,SAT (Glucose3 - Commander),37.273,True,
+hexadoku16x16_0003,medium,SAT (Glucose3 - Product),28.759,True,
+hexadoku16x16_0003,medium,SAT (Glucose3 - SeqCounter),36.818,True,
+hexadoku16x16_0003,medium,CP-SAT (Google OR-Tools),59.193,True,
+hexadoku16x16_0003,medium,ILP (PuLP / CBC),753.986,True,
+hexadoku16x16_0003,medium,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0003,medium,CPLEX CP (IBM CPO),52.623,True,
+hexadoku16x16_0003,medium,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1127 consts, CPLEX code=1016"
+hexadoku16x16_0004,medium,SAT (Glucose3 - Pairwise),96.154,True,
+hexadoku16x16_0004,medium,SAT (Glucose3 - Binary),75.507,True,
+hexadoku16x16_0004,medium,SAT (Glucose3 - Commander),48.282,True,
+hexadoku16x16_0004,medium,SAT (Glucose3 - Product),88.368,True,
+hexadoku16x16_0004,medium,SAT (Glucose3 - SeqCounter),56.923,True,
+hexadoku16x16_0004,medium,CP-SAT (Google OR-Tools),106.699,True,
+hexadoku16x16_0004,medium,ILP (PuLP / CBC),1046.381,True,
+hexadoku16x16_0004,medium,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0004,medium,CPLEX CP (IBM CPO),98.519,True,
+hexadoku16x16_0004,medium,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1114 consts, CPLEX code=1016"
+hexadoku16x16_0005,hard,SAT (Glucose3 - Pairwise),97.801,True,
+hexadoku16x16_0005,hard,SAT (Glucose3 - Binary),115.787,True,
+hexadoku16x16_0005,hard,SAT (Glucose3 - Commander),67.507,True,
+hexadoku16x16_0005,hard,SAT (Glucose3 - Product),44.922,True,
+hexadoku16x16_0005,hard,SAT (Glucose3 - SeqCounter),60.032,True,
+hexadoku16x16_0005,hard,CP-SAT (Google OR-Tools),165.949,True,
+hexadoku16x16_0005,hard,ILP (PuLP / CBC),1062.22,True,
+hexadoku16x16_0005,hard,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0005,hard,CPLEX CP (IBM CPO),69.448,True,
+hexadoku16x16_0005,hard,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1101 consts, CPLEX code=1016"
+hexadoku16x16_0006,hard,SAT (Glucose3 - Pairwise),155.278,True,
+hexadoku16x16_0006,hard,SAT (Glucose3 - Binary),68.966,True,
+hexadoku16x16_0006,hard,SAT (Glucose3 - Commander),59.806,True,
+hexadoku16x16_0006,hard,SAT (Glucose3 - Product),48.892,True,
+hexadoku16x16_0006,hard,SAT (Glucose3 - SeqCounter),111.299,True,
+hexadoku16x16_0006,hard,CP-SAT (Google OR-Tools),142.259,True,
+hexadoku16x16_0006,hard,ILP (PuLP / CBC),997.195,True,
+hexadoku16x16_0006,hard,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0006,hard,CPLEX CP (IBM CPO),61.389,True,
+hexadoku16x16_0006,hard,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1096 consts, CPLEX code=1016"
+hexadoku16x16_0007,expert,SAT (Glucose3 - Pairwise),106.256,True,
+hexadoku16x16_0007,expert,SAT (Glucose3 - Binary),72.809,True,
+hexadoku16x16_0007,expert,SAT (Glucose3 - Commander),111.679,True,
+hexadoku16x16_0007,expert,SAT (Glucose3 - Product),49.582,True,
+hexadoku16x16_0007,expert,SAT (Glucose3 - SeqCounter),65.679,True,
+hexadoku16x16_0007,expert,CP-SAT (Google OR-Tools),225.713,True,
+hexadoku16x16_0007,expert,ILP (PuLP / CBC),1021.953,True,
+hexadoku16x16_0007,expert,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0007,expert,CPLEX CP (IBM CPO),60.287,True,
+hexadoku16x16_0007,expert,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1088 consts, CPLEX code=1016"
+hexadoku16x16_0008,expert,SAT (Glucose3 - Pairwise),159.954,True,
+hexadoku16x16_0008,expert,SAT (Glucose3 - Binary),75.075,True,
+hexadoku16x16_0008,expert,SAT (Glucose3 - Commander),58.907,True,
+hexadoku16x16_0008,expert,SAT (Glucose3 - Product),48.024,True,
+hexadoku16x16_0008,expert,SAT (Glucose3 - SeqCounter),67.56,True,
+hexadoku16x16_0008,expert,CP-SAT (Google OR-Tools),222.625,True,
+hexadoku16x16_0008,expert,ILP (PuLP / CBC),1114.257,True,
+hexadoku16x16_0008,expert,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0008,expert,CPLEX CP (IBM CPO),50.004,True,
+hexadoku16x16_0008,expert,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1081 consts, CPLEX code=1016"
+hexadoku16x16_0009,expert,SAT (Glucose3 - Pairwise),95.456,True,
+hexadoku16x16_0009,expert,SAT (Glucose3 - Binary),73.242,True,
+hexadoku16x16_0009,expert,SAT (Glucose3 - Commander),66.499,True,
+hexadoku16x16_0009,expert,SAT (Glucose3 - Product),122.333,True,
+hexadoku16x16_0009,expert,SAT (Glucose3 - SeqCounter),86.559,True,
+hexadoku16x16_0009,expert,CP-SAT (Google OR-Tools),276.75,True,
+hexadoku16x16_0009,expert,ILP (PuLP / CBC),1394.688,True,
+hexadoku16x16_0009,expert,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0009,expert,CPLEX CP (IBM CPO),73.481,True,
+hexadoku16x16_0009,expert,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1076 consts, CPLEX code=1016"
+hexadoku16x16_0010,expert,SAT (Glucose3 - Pairwise),80.509,True,
+hexadoku16x16_0010,expert,SAT (Glucose3 - Binary),114.563,True,
+hexadoku16x16_0010,expert,SAT (Glucose3 - Commander),43.061,True,
+hexadoku16x16_0010,expert,SAT (Glucose3 - Product),37.121,True,
+hexadoku16x16_0010,expert,SAT (Glucose3 - SeqCounter),51.443,True,
+hexadoku16x16_0010,expert,CP-SAT (Google OR-Tools),149.309,True,
+hexadoku16x16_0010,expert,ILP (PuLP / CBC),1434.561,True,
+hexadoku16x16_0010,expert,Gurobi (MIP),,False,Model too large for size-limited license; visit https://gurobi.com/unrestricted for more information
+hexadoku16x16_0010,expert,CPLEX CP (IBM CPO),55.196,True,
+hexadoku16x16_0010,expert,CPLEX MIP (IBM MP),,False,"**** Promotional version. Problem size limits (1000 vars, 1000 consts) exceeded, model has 4096 vars, 1071 consts, CPLEX code=1016"
