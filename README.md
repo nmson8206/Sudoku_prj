@@ -67,11 +67,11 @@ Loader (`benchmarks/dataset_loader.py`) hỗ trợ 5 nhóm nguồn:
    - `top95`, `easy50`, `hardest`: các tập đề dùng để khảo sát thuật toán giải Sudoku.
 2. **Sudoku Exchange Puzzle Bank**:
    - Ngân hàng câu đố phân loại theo 4 mức: `easy`, `medium`, `hard`, `diabolical` (→ Expert).
-3. **KaggleHub** (tùy chọn, cần Internet): `gaz3ll3/top95-sudoku`, `bryanpark/sudoku`.
-4. **Hugging Face** (tùy chọn, cần Internet): `Ritvik19/Sudoku-Dataset`, `Alignment-Lab-AI/Expert-Sudoku-100k`, `MathMindsAGI/sudoku_v1`.
-5. **Dữ liệu đa kích thước tự sinh**:
+3. **Dữ liệu đa kích thước tự sinh**:
    - $4\times4$: 10 đề.
    - $16\times16$: 10 đề, xóa ô từ một nghiệm cơ sở với seed 42; tỷ lệ ô giữ lại được cấu hình từ 18% đến 55%. Cách sinh bảo đảm có nghiệm nhưng chưa bảo đảm duy nhất.
+4. **KaggleHub**: nguồn tải tùy chọn qua `load_from_kagglehub()`; snapshot hiện tại không có bản ghi từ nguồn này.
+5. **Hugging Face**: nguồn tải tùy chọn qua `load_from_huggingface()`; snapshot hiện tại không có bản ghi từ nguồn này.
 
 ### 2.2. Thành phần thực tế của `data/benchmark_dataset.json`
 **299 bản ghi**: 279 bản ghi $9\times9$, 10 bản ghi $4\times4$, 10 bản ghi $16\times16$.
