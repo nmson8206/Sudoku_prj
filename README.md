@@ -1,19 +1,22 @@
 # Sudoku Solver & SAT Cardinality Encodings (AMO / ALO Framework)
 
-Dự án triển khai và benchmark các thuật toán giải Sudoku tổng quát $N \times N$ (4x4, 9x9, 16x16,...) với trọng tâm là **các kỹ thuật mã hóa SAT cho ràng buộc số lượng (Cardinality Constraints: At-Most-One - AMO, At-Least-One - ALO, Exactly-One - EO)**, đồng thời so sánh hiệu năng với các phương pháp giải tối ưu khác như Constraint Programming (CP) và Integer Linear Programming (ILP/MIP).
+Dự án mô hình hóa và giải Sudoku bằng SAT, với trọng tâm là các kỹ thuật mã hóa ràng buộc số lượng: **At-Most-One (AMO), At-Least-One (ALO) và Exactly-One (EO)**. Glucose3 được so sánh với các bộ giải CP và ILP/MIP: OR-Tools CP-SAT, IBM CP Optimizer, Gurobi, CPLEX MIP và PuLP/CBC.
 
-Dự án tích hợp trực tiếp **299 bài Sudoku đa kích thước ($4\times4, 9\times9, 16\times16$) và đa dạng cấp độ khó (Easy, Medium, Hard, Expert)** tổng hợp từ **Peter Norvig Benchmark** và **Sudoku Exchange Puzzle Bank** (loader còn hỗ trợ thêm nguồn **KaggleHub** và **Hugging Face** khi có kết nối Internet), đi kèm hệ thống tự động chuẩn hóa dữ liệu thống nhất (Data Normalization Pipeline) và công cụ trực quan hóa Matplotlib phục vụ báo cáo khoa học.
+Snapshot đóng gói gồm **299 bản ghi, tương ứng 298 đề phân biệt**: 279 bản ghi $9\times9$, 10 đề $4\times4$ và 10 đề $16\times16$. Dữ liệu gồm nguồn **Peter Norvig**, **Sudoku Exchange** và các đề **tự sinh**. Loader còn hỗ trợ KaggleHub/Hugging Face, nhưng snapshot hiện tại không có bản ghi từ hai nguồn này.
+
+- [Báo cáo PDF](report/main.pdf)
+- [Mã nguồn báo cáo LaTeX](report/main.tex)
 
 ---
 
-## 1. Cấu trúc dự án chuẩn mực & logic
+## 1. Cấu trúc dự án
 
 ```text
 Sudoku_prj/
-├── data/                         # Thư mục chứa dữ liệu chuẩn hóa (299 puzzles)
-│   └── benchmark_dataset.json   # Dataset benchmark: 279 bài 9x9 + 10 bài 4x4 + 10 bài 16x16
+├── data/                         # Snapshot dữ liệu chuẩn hóa
+│   └── benchmark_dataset.json   # 299 bản ghi: 279 bài 9x9 + 10 bài 4x4 + 10 bài 16x16
 │
-├── sat_encodings/               # Các phương pháp mã hóa SAT cho ALO, AMO, EO (generic cho mọi N)
+├── sat_encodings/               # Các phương pháp mã hóa ALO, AMO và EO
 │   ├── __init__.py              # Public API
 │   ├── alo.py                   # At-Least-One: (x1 v x2 v ... v xn)
 │   ├── pairwise.py              # Pairwise AMO (Naive O(n^2) - Tự cài đặt)
@@ -34,13 +37,13 @@ Sudoku_prj/
 │
 ├── benchmarks/                  # Scripts đo lường hiệu năng & Trực quan hóa
 │   ├── __init__.py              # Public benchmark & loader API
-│   ├── dataset_loader.py        # Tải, chuẩn hóa và phân loại độ khó theo mật độ clues
+│   ├── dataset_loader.py        # Tải, chuẩn hóa; dùng nhãn nguồn hoặc suy ra theo mật độ gợi ý
 │   ├── plotter.py               # Module vẽ biểu đồ Matplotlib (so sánh solvers, encodings, độ khó)
 │   ├── benchmark_dataset.py     # Benchmark Solvers & Encodings trên Dataset chuẩn hóa
 │   ├── benchmark_solvers.py     # So sánh tất cả các Solver trên ma trận mẫu
 │   └── benchmark_encodings.py   # So sánh 5 phương pháp SAT Encoding trên ma trận mẫu
 │
-├── reports/                     # Thư mục lưu kết quả thực nghiệm (.png, .csv, .json)
+├── reports/                     # Kết quả xuất PNG/CSV/JSON; hiện đóng gói các biểu đồ PNG
 ├── report/                      # Báo cáo LaTeX (main.tex → main.pdf) & hình minh họa thực nghiệm
 ├── tests/                       # Hệ thống kiểm thử tự động
 │   ├── __init__.py
@@ -49,33 +52,31 @@ Sudoku_prj/
 │   └── test_dataset.py          # Kiểm thử loader & chuẩn hóa dữ liệu đa định dạng
 │
 ├── utils.py                     # Đề bài mẫu (4x4, 9x9, 16x16) & in kẻ khung bàn cờ NxN
-├── main.py                      # Điểm vào dòng lệnh (CLI Application hoàn chỉnh)
+├── main.py                      # Điểm vào giao diện dòng lệnh (CLI)
 ├── requirements.txt             # Danh sách thư viện phụ thuộc
 └── README.md                    # Tài liệu hướng dẫn sử dụng
 ```
 
 ---
 
-## 2. Dữ liệu Benchmark (299 Puzzles đa kích thước & độ khó)
+## 2. Dữ liệu benchmark
 
 ### 2.1. Nguồn dữ liệu tích hợp
 Loader (`benchmarks/dataset_loader.py`) hỗ trợ 5 nhóm nguồn:
 1. **Peter Norvig Benchmark** (tải trực tiếp từ `norvig.com`):
-   - `top95`: bộ Sudoku kinh điển và thách thức nhất.
-   - `easy50`: bộ chuẩn cơ bản.
-   - `hardest`: tuyển tập các bài thách thức bộ giải SAT/Search.
+   - `top95`, `easy50`, `hardest`: các tập đề dùng để khảo sát thuật toán giải Sudoku.
 2. **Sudoku Exchange Puzzle Bank**:
    - Ngân hàng câu đố phân loại theo 4 mức: `easy`, `medium`, `hard`, `diabolical` (→ Expert).
 3. **KaggleHub** (tùy chọn, cần Internet): `gaz3ll3/top95-sudoku`, `bryanpark/sudoku`.
 4. **Hugging Face** (tùy chọn, cần Internet): `Ritvik19/Sudoku-Dataset`, `Alignment-Lab-AI/Expert-Sudoku-100k`, `MathMindsAGI/sudoku_v1`.
-5. **Bộ câu đố đa kích thước (Multisize)**:
-   - $4 \times 4$ (Mini-Sudoku): 10 bài.
-   - $16 \times 16$ (Hexadoku): 10 bài với clue density (mật độ ô gợi ý) từ 18% đến 55%.
+5. **Dữ liệu đa kích thước tự sinh**:
+   - $4\times4$: 10 đề.
+   - $16\times16$: 10 đề, xóa ô từ một nghiệm cơ sở với seed 42; tỷ lệ ô giữ lại được cấu hình từ 18% đến 55%. Cách sinh bảo đảm có nghiệm nhưng chưa bảo đảm duy nhất.
 
 ### 2.2. Thành phần thực tế của `data/benchmark_dataset.json`
-299 bài, phân bố theo kích thước: **279 bài $9\times9$**, **10 bài $4\times4$**, **10 bài $16\times16$**.
+**299 bản ghi**: 279 bản ghi $9\times9$, 10 bản ghi $4\times4$, 10 bản ghi $16\times16$.
 
-| Nguồn (`dataset`) | Số bài |
+| Nguồn (`dataset`) | Số bản ghi |
 | :--- | ---: |
 | `norvig/top95` | 70 |
 | `norvig/easy50` | 50 |
@@ -88,32 +89,31 @@ Loader (`benchmarks/dataset_loader.py`) hỗ trợ 5 nhóm nguồn:
 | `synthetic_16x16` | 10 |
 | **Tổng** | **299** |
 
-> Ghi chú: `--source kaggle` / `--source huggingface` chỉ trả về kết quả khi máy có Internet và đã cài `kagglehub` / `datasets`. Nếu tải thất bại, loader tự động dùng các nguồn Norvig + Sudoku Exchange và bộ multisize ở trên.
 
 ### 2.3. Chuẩn hóa dữ liệu (Schema thống nhất)
-Toàn bộ câu đố từ các nguồn được ánh xạ về một cấu trúc thống nhất:
+Mỗi đề được ánh xạ về schema chung. Ví dụ dưới đây minh họa cấu trúc bằng bảng $4\times4$, không phải một bản ghi trích nguyên văn từ snapshot:
 ```json
 {
-  "id": "exchange_medium_0001",
-  "source": "sudoku_exchange",
-  "dataset": "sudoku_exchange/medium",
-  "size": 9,
+  "id": "example_4x4",
+  "source": "example",
+  "dataset": "example/4x4",
+  "size": 4,
   "difficulty": "medium",
-  "clues_count": 29,
-  "puzzle_string": "020900000048000031000063020009407003003080200400105600030570000250000180000006050",
-  "grid": [[0, 2, 0, ...], ...],
+  "clues_count": 6,
+  "puzzle_string": "1004040001030020",
+  "grid": [[1, 0, 0, 4], [0, 4, 0, 0], [0, 1, 0, 3], [0, 0, 2, 0]],
   "solution_string": null,
   "solution_grid": null
 }
 ```
 
-Phân loại cấp độ khó dựa trên tỷ lệ mật độ ô gợi ý (Clue Density $\rho = \frac{\text{clues}}{N^2}$), tương ứng với hàm `infer_difficulty()`:
+Ô trống được biểu diễn bằng `0`; chuỗi đầu vào có thể dùng `.` cho ô trống và ký hiệu chữ cho giá trị lớn hơn 9. Khi không có nhãn nguồn được nhận diện, `infer_difficulty()` suy ra độ khó từ mật độ gợi ý $\rho=\mathrm{clues}/N^2$:
 - **Expert**: $\rho \le 27\%$ (với $9\times9$ là $\le 21$ clues).
 - **Hard**: $27\% < \rho \le 33\%$ (với $9\times9$ là $22 - 26$ clues).
 - **Medium**: $33\% < \rho \le 42\%$ (với $9\times9$ là $27 - 34$ clues).
 - **Easy**: $\rho > 42\%$ (với $9\times9$ là $\ge 35$ clues).
 
-Nếu câu đố đã có nhãn độ khó gốc từ nguồn (`diabolical`, `evil` → Expert; `difficult` → Hard; `moderate` → Medium; `simple` → Easy…), nhãn gốc được ưu tiên áp dụng.
+Nếu có nhãn nguồn được nhận diện (`diabolical`, `evil` → Expert; `difficult` → Hard; `moderate` → Medium; `simple` → Easy…), loader ưu tiên nhãn đó. Khi đọc snapshot, nhãn lưu sẵn được giữ nguyên; một số nhãn hiện không khớp quy tắc ưu tiên nguồn của loader. Vì vậy, tải lại có thể thay đổi phân bố nhãn. Số gợi ý và nhãn nguồn không phải thước đo độ khó thống nhất cho mọi solver.
 
 ---
 
@@ -123,30 +123,37 @@ Nếu câu đố đã có nhãn độ khó gốc từ nguồn (`diabolical`, `ev
 | :--- | :--- | :---: | :---: | :--- |
 | **Pairwise (Naive)** | Tự cài đặt (`combinations`) | $0$ | $O(n^2)$ | Dễ cài đặt, không biến phụ, nhưng bùng nổ clause khi $n$ lớn. |
 | **Binary (Bitwise)** | PySAT (`EncType.bitwise`, Frisch et al., 2008) | $\lceil \log_2 n \rceil$ | $O(n \log n)$ | Tiết kiệm biến phụ, số clause tăng theo $O(n\log n)$. |
-| **Commander** | Tự cài đặt (Klieber & Kwon, 2007), $k=3$ | $O(n/k)$ | $O(n)$ | Tuyến tính cả biến và mệnh đề, chia cụm $k=3$ trực quan. |
-| **Product (2-Product)**| Tự cài đặt (Jingchao Chen, 2010) | $2\lceil\sqrt{n}\rceil$ | $O(n)$ | Sinh mệnh đề tuyến tính theo $n$, cấu trúc lưới 2D thanh lịch. |
-| **Sequential Counter**| PySAT (`EncType.seqcounter`, Sinz, 2005) | $n - 1$ | $O(n)$ ($3n-4$) | Tối ưu hóa lan truyền đơn vị (unit propagation) của SAT solver. |
+| **Commander** | Tự cài đặt (Klieber & Kwon, 2007), nhóm $k=3$ | $O(n)$ với $k$ cố định | $O(n)$ | Chia nhóm và mã hóa đệ quy trên biến chỉ huy. |
+| **Product (2-Product)** | Tự cài đặt (Jingchao Chen, 2010) | $p+q=O(\sqrt n)$ | $2n+\binom p2+\binom q2=O(n)$ | Lưới $p=\lceil\sqrt n\rceil$, $q=\lceil n/p\rceil$; dùng Pairwise trên biến hàng/cột. |
+| **Sequential Counter** | PySAT (`EncType.seqcounter`, Sinz, 2005) | $n-1$ | $3n-4=O(n)$ | Lan truyền qua chuỗi biến đếm. |
+
+Các công thức mô tả một nhóm AMO với $n\ge2$; thư viện có thể rút gọn trường hợp nhỏ. Product chỉ có $p+q=2\sqrt n$ khi $n$ là số chính phương. Với Sudoku, có $4N^2$ nhóm EO và mỗi EO gồm một ALO cùng một AMO, ngoài các mệnh đề đơn nguyên cho gợi ý.
 
 ---
 
 ## 4. Hướng dẫn sử dụng CLI (`main.py`)
 
 ### 4.1. Cài đặt thư viện
-Yêu cầu **Python ≥ 3.10** (đã kiểm thử trên Python 3.14, Windows x64).
+Yêu cầu **Python ≥ 3.10**; cấu hình được ghi trong báo cáo là Python 3.14 trên Windows x64. Chạy lệnh từ thư mục gốc dự án. `requirements.txt` chỉ quy định khoảng phiên bản, chưa khóa chính xác môi trường thực nghiệm.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Các bộ giải thương mại (Gurobi, IBM CPLEX) cần **license** khi giải. Nếu thiếu license, lời gọi solver tương ứng chỉ báo lỗi và được ghi nhận là thất bại (chương trình không dừng).
+Gurobi và IBM CPLEX cần thư viện cùng license/quyền sử dụng phù hợp. Benchmark trên dataset bắt lỗi trong từng lời gọi solver và ghi nhận thất bại, nhưng thiếu gói thư viện lúc import có thể khiến CLI dừng trước khi benchmark bắt đầu. Không nên coi tất cả phụ thuộc thương mại là tùy chọn có thể bỏ cài đặt. Cần phân biệt lỗi môi trường/license với kết quả không có nghiệm.
 
-### 4.2. Khởi tạo/Cập nhật Dataset
+### 4.2. Sử dụng hoặc tải lại dữ liệu
+Các lệnh benchmark đọc snapshot sẵn có; **không cần chạy `--prepare-data` để dùng dữ liệu đóng gói**.
+
+> **Lưu ý:** lệnh dưới tải lại các nguồn và ghi đè `data/benchmark_dataset.json`. Số lượng đề, nguồn và nhãn phụ thuộc kết nối, dữ liệu trực tuyến và cấu hình loader; không bảo đảm tạo đúng 299 bản ghi. Hãy sao lưu snapshot trước nếu cần giữ nguyên dữ liệu dùng trong báo cáo.
+
 ```bash
-# Tải và cập nhật 299 bài Sudoku chuẩn hóa lưu vào data/benchmark_dataset.json:
 python main.py --prepare-data
 ```
 
 ### 4.3. Chạy Benchmark trên Dataset chuẩn hóa & Xuất biểu đồ
+
+**Mặc định:** CLI dùng `--size 9`, vì vậy không tự chạy cả 299 bản ghi. Chọn `--size 4` hoặc `--size 16` để khảo sát nhóm khác. `--limit` lấy các bản ghi đầu theo nhóm độ khó (cố gắng phân bổ giữa các nhóm), không phải lấy mẫu ngẫu nhiên; nếu đã lọc một độ khó thì lấy các bản ghi đầu nhóm đó.
 
 #### 1. Benchmark 5 phương pháp SAT Encoding (vẽ biểu đồ + timestamp chống trùng file):
 ```bash
@@ -205,6 +212,8 @@ python main.py --benchmark-dataset-encodings --limit 50 --output-plot reports/my
 ---
 
 ### 4.4. Giải Sudoku đơn lẻ & Benchmark nhanh
+`--solve` giải bảng mẫu của kích thước được chọn, chưa hỗ trợ nhập đề tùy ý qua tệp CLI. Có thể truyền ma trận trực tiếp qua API Python ở Mục 5.
+
 ```bash
 # Giải bảng mẫu 9x9 bằng SAT (Product encoding):
 python main.py --solve product
@@ -225,9 +234,11 @@ python main.py --benchmark-sat
 
 ### 4.5. Chạy hệ thống kiểm thử tự động
 ```bash
-# Chạy Unit Tests và Integration Tests toàn diện:
+# Chạy các bộ kiểm thử hiện có:
 python main.py --test
 ```
+
+Kiểm thử encoding duyệt $2^6$ phép gán ở `n=6` cho ALO, năm AMO và năm EO; chưa bao phủ mọi kích thước hoặc trường hợp rỗng/đơn phần tử. Kiểm thử solver trên $9\times9$ có các bộ giải đã tích hợp, trên $4\times4$ có SAT Product/CP-SAT/CBC, trên $16\times16$ có SAT Product/CP-SAT. Các kiểm thử thương mại có thể bị bỏ qua khi gặp lỗi; cần đọc log từng trường hợp thay vì coi việc kết thúc chương trình là mọi solver đều đạt. Kiểm tra nghiệm xác minh hàng, cột, khối và gợi ý, không chứng minh duy nhất.
 
 ---
 
@@ -242,11 +253,12 @@ from utils import print_grid
 puzzles = load_normalized_dataset(size=9, difficulty="expert", limit=5)
 print(f"Đã nạp {len(puzzles)} bài Sudoku 9x9 Expert")
 
-# 2. Giải puzzle đầu tiên bằng SAT (phương pháp Product):
-grid = puzzles[0]["grid"]
-solution = solve_sudoku_sat(grid, method="product")
-if solution:
-    print_grid(solution, f"Nghiệm bài {puzzles[0]['id']}")
+# 2. Giải đề đầu tiên bằng SAT (Product), nếu bộ lọc có dữ liệu:
+if puzzles:
+    grid = puzzles[0]["grid"]
+    solution = solve_sudoku_sat(grid, method="product")
+    if solution:
+        print_grid(solution, f"Nghiệm bài {puzzles[0]['id']}")
 
 # 3. Chạy benchmark so sánh các solver:
 benchmark_dataset_solvers(puzzles=puzzles, plot=True)
@@ -254,7 +266,18 @@ benchmark_dataset_solvers(puzzles=puzzles, plot=True)
 
 ---
 
-## 6. Tính sẵn sàng của dữ liệu & mã nguồn (Data Availability)
+## 6. Phạm vi đo và giới hạn tái lập
 
-Toàn bộ mã nguồn, các thuật toán mã hóa, dữ liệu benchmark chuẩn hóa và các hình ảnh kết quả thực nghiệm được công khai tại GitHub:
-- **Repository URL**: [https://github.com/nmson8206/Sudoku_prj](https://github.com/nmson8206/Sudoku_prj)
+- **Benchmark encoding:** đo sinh CNF và lời gọi `solver.solve()`. `total_ms` là tổng hai pha, **không gồm** khởi tạo solver, nạp CNF, giải mã hoặc kiểm tra nghiệm.
+- **Benchmark solver:** đo toàn bộ hàm giải, gồm dựng mô hình và các chi phí trong wrapper; không tính kiểm tra nghiệm bên ngoài. Vì vậy, thời gian hai loại benchmark không so sánh trực tiếp được.
+- Benchmark dataset kiểm tra nghiệm theo luật Sudoku và gợi ý. Hiện đo một lần cho mỗi cặp đề–phương pháp, theo thứ tự cố định; chưa có warm-up, khoảng tin cậy hoặc cấu hình timeout/số luồng/seed thống nhất giữa các solver.
+- Các exception được ghi nhận là lỗi và không có thời gian; các bản ghi này bị loại khỏi trung bình. Hãy đọc đồng thời tỷ lệ nghiệm hợp lệ và số lần lỗi, không xếp hạng chỉ bằng thời gian.
+- `reports/` hiện đóng gói các biểu đồ PNG, chưa có đủ CSV/JSON thô để tái lập độc lập số liệu thời gian cũ. Để lưu kết quả lần chạy mới, dùng `--csv --json --timestamp` và ghi lại lệnh, phiên bản thư viện cùng cấu hình máy.
+- Case study trong báo cáo có thời gian tham khảo đã ghi nhận; repository chưa cung cấp đủ script và dữ liệu thô xác nhận giao thức cực tiểu 60 lần qua ba phiên. Không coi đó là quy trình đã được các script benchmark hiện tại tự động thực hiện.
+- Dữ liệu trùng, dữ liệu tự sinh, nhãn không đồng nhất và kiểm tra đầu vào chưa đầy đủ là các giới hạn hiện có. Kết quả không chứng minh ưu thế tổng quát của SAT trước CP/MIP.
+
+## 7. Mã nguồn và báo cáo
+
+- **Repository:** [https://github.com/nmson8206/Sudoku_prj](https://github.com/nmson8206/Sudoku_prj)
+- **Báo cáo:** [PDF](report/main.pdf) · [LaTeX](report/main.tex)
+- **Snapshot dữ liệu:** [data/benchmark_dataset.json](data/benchmark_dataset.json)

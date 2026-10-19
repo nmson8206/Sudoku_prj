@@ -8,9 +8,9 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{subcaption}
-% Giữ hình/bảng trong phạm vi mục của chúng: tránh trường hợp float bị đẩy
-% ra tận sau danh mục Tài liệu (hình nằm rời khỏi phần tham chiếu).
-\usepackage[section]{placeins}
+% Cho phép float đi qua ranh giới mục để tránh trang trắng lớn;
+% chặn toàn bộ float trước tài liệu tham khảo ở cuối báo cáo.
+\usepackage{placeins}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{natbib}
@@ -45,8 +45,14 @@
 
 \begin{document}
 \let\WriteBookmarks\relax
-\def\floatpagepagefraction{1}
-\def\textpagefraction{.001}
+% Thiết lập float cho bố cục một cột của cas-sc.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
 
 \shorttitle{Mô hình hóa SAT Encoding và Đánh giá hiệu năng giải Sudoku $N \times N$}
 \shortauthors{Nguyễn Minh Sơn - BTL 1 Các vấn đề hiện đại KHMT}
@@ -54,16 +60,16 @@
 \title [mode = title]{NGHIÊN CỨU MÔ HÌNH HÓA SAT ENCODING CHO RÀNG\\
 BUỘC CARDINALITY (AMO/ALO) VÀ ĐÁNH GIÁ THỰC NGHIỆM SO SÁNH GIẢI SUDOKU $N \times N$ VỚI CÁC PHƯƠNG PHÁP CHÍNH XÁC (CP, ILP/MIP)}
 
-\author[1]{Nguyễn Minh Sơn}[type=editor, auid=000, bioid=1, role=Nghiên cứu sinh thực hiện]
+\author[1]{Nguyễn Minh Sơn}[type=editor, auid=000, bioid=1]
 \cormark[1]
-\ead{student@university.edu.vn}
+\ead{24021614@vnu.edu.vn}
 
-\address[1]{Khoa Khoa học Máy tính, Trường Công nghệ Thông tin và Truyền thông, Học kỳ I (2026--2027)}
+\address[1]{Khoa công nghệ thông tin, Trường đại học Công nghệ}
 
-\cortext[cor1]{Tác giả liên hệ chính.}
+\cortext[cor1]{Tác giả liên hệ.}
 
 \begin{abstract}
-Bài toán Sudoku tổng quát trên ma trận kích thước $N \times N$ ($4\times4, 9\times9, 16\times16$) là bài toán thuộc lớp NP-complete kinh điển, mang tính chất đại diện tiêu biểu cho các bài toán thỏa mãn ràng buộc (CSP) và giải đố logic. Trọng tâm của bài báo này là nghiên cứu, thiết kế và đánh giá thực nghiệm các kỹ thuật mã hóa mệnh đề logic (SAT Encoding) cho các ràng buộc số lượng (Cardinality Constraints), đặc biệt là ràng buộc At-Most-One (AMO), At-Least-One (ALO) và Exactly-One (EO). Nghiên cứu triển khai thực nghiệm 5 kỹ thuật mã hóa AMO chuyên sâu: \textit{Pairwise (Naive)}, \textit{Binary (Bitwise)}, \textit{Commander (Klieber \& Kwon, 2007)}, \textit{2-Product (Jingchao Chen, 2010)}, và \textit{Sequential Counter (Carsten Sinz, 2005)}. Hiệu năng của SAT Solver (\textit{Glucose3} thông qua thư viện PySAT) được đặt trong mối tương quan so sánh đối chuẩn toàn diện với các công cụ giải chính xác hàng đầu thế giới thuộc hai trường phái Constraint Programming (CP) và Integer Linear Programming (ILP/MIP): \textit{Google OR-Tools CP-SAT}, \textit{IBM CPLEX CP Optimizer}, \textit{Gurobi Optimizer (MIP)}, \textit{IBM CPLEX MIP}, và \textit{PuLP (CBC)}. Thực nghiệm được tiến hành trên tập dữ liệu chuẩn hóa gồm 299 câu đố với đa dạng kích thước ($4\times4, 9\times9, 16\times16$) và 4 cấp độ khó (\textit{Easy, Medium, Hard, Expert}) thu thập từ các kho dữ liệu quốc tế như Peter Norvig Benchmark, Sudoku Exchange Puzzle Bank, KaggleHub và Hugging Face. Kết quả thực nghiệm làm sáng tỏ quy luật sinh biến phụ, số lượng mệnh đề CNF, tính hiệu quả của cơ chế lan truyền đơn vị (unit propagation) và khẳng định lợi thế về tốc độ của phương pháp SAT cho bài toán Sudoku so với các bộ giải tối ưu hóa truyền thống (CP, ILP/MIP).
+Báo cáo trình bày việc mô hình hóa và giải Sudoku bằng SAT, tập trung vào các ràng buộc At-Least-One (ALO), At-Most-One (AMO) và Exactly-One (EO). Hệ thống tích hợp năm kỹ thuật AMO: Pairwise, Binary, Commander, 2-Product và Sequential Counter; sử dụng Glucose3 thông qua PySAT và so sánh với OR-Tools CP-SAT, IBM CP Optimizer, Gurobi, CPLEX MIP và PuLP/CBC. Bộ dữ liệu đóng gói gồm 299 bản ghi ở ba kích thước $4\times4$, $9\times9$, $16\times16$, tương ứng 298 đề phân biệt, lấy từ Peter Norvig, Sudoku Exchange và dữ liệu tự sinh. Báo cáo phân tích quy mô CNF, chi phí mã hóa và thời gian thực thi hàm giải; đồng thời mô tả kiến trúc chương trình, giao diện dòng lệnh và kiểm tra nghiệm. Các số liệu đã ghi nhận cho thấy lựa chọn encoding và phạm vi đo ảnh hưởng đến thứ hạng phương pháp. Kết luận được giới hạn trong tập dữ liệu và cấu hình khảo sát; các hạn chế về dữ liệu, đo lường và khả năng tái lập được trình bày riêng.
 \end{abstract}
 
 \begin{keywords}
@@ -73,9 +79,9 @@ Sudoku Solver \sep SAT Encoding \sep AMO Constraints \sep Constraint Programming
 \maketitle
 
 \section{Giới thiệu (Introduction)}
-Bài toán Sudoku là một trò chơi giải đố sắp xếp chữ số tổ hợp đã thu hút sự chú ý sâu sắc của cộng đồng Khoa học máy tính và Trí tuệ nhân tạo (AI). Trên bảng kích thước chuẩn $9 \times 9$ chia thành 9 khối con $3 \times 3$, người chơi cần điền các chữ số từ 1 đến 9 vào các ô trống sao cho mỗi chữ số xuất hiện đúng một lần duy nhất trên mỗi hàng, mỗi cột và mỗi khối con. Mở rộng bài toán sang kích thước tổng quát $N \times N$ (với $N = k^2$, khối con kích thước $k \times k$), bài toán Sudoku đã được chứng minh là thuộc lớp bài toán \textbf{NP-complete} \cite{norvig2006solving}.
+Sudoku là bài toán điền giá trị vào bảng sao cho mỗi hàng, cột và khối con chứa các giá trị không lặp. Với bảng chuẩn $9\times9$, miền giá trị là $1$ đến $9$ và mỗi khối có kích thước $3\times3$. Bài toán có thể mở rộng sang bảng $N\times N$, với $N=k^2$ đối với khối vuông $k\times k$. Đây là một ví dụ phù hợp để khảo sát mô hình hóa bài toán thỏa mãn ràng buộc; Norvig trình bày cách giải bằng lan truyền ràng buộc và tìm kiếm \cite{norvig2006solving}.
 
-Trong lý thuyết tính toán, SAT (Boolean Satisfiability Problem) là bài toán NP-complete đầu tiên được chứng minh theo định lý Cook-Levin. Nhờ vào sự phát triển vượt bậc của các thuật toán CDCL (Conflict-Driven Clause Learning) trong hai thập kỷ qua, các bộ giải SAT hiện đại (như Glucose \cite{audemard2009predicting}, Cadical, Kissat) có khả năng giải quyết các bài toán công nghiệp chứa hàng triệu biến và mệnh đề chỉ trong vài giây. Một trong những thách thức quan trọng nhất khi áp dụng SAT vào thực tế là \textbf{kỹ thuật mã hóa (SAT Encoding)} các ràng buộc bài toán sang dạng chuẩn hội CNF (Conjunctive Normal Form), đặc biệt là các ràng buộc số lượng (\textit{Cardinality Constraints}): At-Least-One (ALO - có ít nhất một biến đúng), At-Most-One (AMO - có nhiều nhất một biến đúng) và Exactly-One (EO - có đúng một biến đúng).
+SAT (Boolean Satisfiability Problem) xác định sự tồn tại của phép gán làm đúng công thức Boole. Các bộ giải hiện đại như Glucose sử dụng CDCL (Conflict-Driven Clause Learning) \cite{audemard2009predicting}. Khi áp dụng SAT cho Sudoku, bước quan trọng là chuyển các ràng buộc sang dạng chuẩn hội CNF (Conjunctive Normal Form). Báo cáo tập trung vào ALO (ít nhất một biến đúng), AMO (nhiều nhất một biến đúng) và EO (đúng một biến đúng).
 
 Đồng thời, bên cạnh tiếp cận bằng SAT, bài toán Sudoku còn có thể được mô hình hóa và giải quyết bằng các phương pháp toán học chính xác khác như:
 \begin{itemize}
@@ -83,11 +89,11 @@ Trong lý thuyết tính toán, SAT (Boolean Satisfiability Problem) là bài to
     \item \textbf{Integer Linear Programming (ILP / MIP)}: Sử dụng quy hoạch tuyến tính nguyên với các biến nhị phân $\{0, 1\}$, giải quyết bằng phương pháp nhánh cận (Branch-and-Bound) kết hợp vết cắt phẳng (Cutting Planes), tiêu biểu là Gurobi Optimizer \cite{gurobi2024optimizer}, IBM CPLEX MIP, và CBC Solver.
 \end{itemize}
 
-Mục tiêu của bài báo này là:
+Mục tiêu của bài tập lớn là:
 \begin{enumerate}
-    \item Xây dựng hệ thống giải Sudoku tổng quát $N \times N$ hỗ trợ đầy đủ 5 kỹ thuật mã hóa AMO tiên tiến nhất trong lý thuyết SAT.
-    \item Triển khai thực nghiệm so sánh đối chuẩn SAT Solver với 5 Solver chính xác hàng đầu thế giới (CP-SAT, CPLEX CP, Gurobi, CPLEX MIP, ILP/CBC).
-    \item Đánh giá hiệu năng toàn diện trên bộ dữ liệu 299 câu đố chuẩn hóa với đa dạng kích thước ($4\times4, 9\times9, 16\times16$) và 4 cấp độ khó.
+    \item Xây dựng hệ thống giải Sudoku tích hợp năm kỹ thuật AMO, phân biệt phần tự cài đặt và phần sử dụng thư viện.
+    \item So sánh Glucose3 với năm cấu hình bộ giải CP và ILP/MIP trên cùng đầu vào.
+    \item Phân tích quy mô mô hình, thời gian thực thi và tính đúng đắn của nghiệm; nêu rõ phạm vi và giới hạn thực nghiệm.
 \end{enumerate}
 
 \section{Mô hình hóa bài toán Sudoku bằng SAT (SAT Formulation)}
@@ -95,7 +101,7 @@ Mục tiêu của bài báo này là:
 Xét bảng Sudoku kích thước $N \times N$ với các khối con kích thước $k_r \times k_c$ ($N = k_r \times k_c$). Mỗi ô trong bảng được định vị bởi tọa độ $(r, c)$ với $0 \le r, c < N$. Các giá trị điền vào nhận giá trị $d \in \{1, 2, \dots, N\}$.
 
 \subsection{Biểu diễn biến mệnh đề}
-Ta định nghĩa biến Boole bậc ba $x_{r,c,d}$:
+Ta định nghĩa biến Boole có ba chỉ số $x_{r,c,d}$:
 \begin{equation}
 x_{r,c,d} = \begin{cases}
 1 & \text{nếu ô } (r, c) \text{ nhận chữ số } d \\
@@ -142,7 +148,7 @@ Một ràng buộc Exactly-One (EO) trên tập biến $X = \{x_1, \dots, x_n\}$
 \text{EO}(X) \iff \text{At-Least-One}(X) \land \text{At-Most-One}(X)
 \end{equation}
 
-Ràng buộc \textbf{At-Least-One (ALO)} được biểu diễn đơn giản bằng 1 mệnh đề hội:
+Ràng buộc \textbf{At-Least-One (ALO)} được biểu diễn bằng một mệnh đề tuyển:
 \begin{equation}
 \text{ALO}(X) = (x_1 \lor x_2 \lor \dots \lor x_n)
 \end{equation}
@@ -150,7 +156,7 @@ Trong khi đó, việc mã hóa ràng buộc \textbf{At-Most-One (AMO)} có ản
 
 \section{Các kỹ thuật mã hóa At-Most-One (AMO Encodings)}
 
-Cho tập gồm $n$ biến Boole $X = \{x_1, x_2, \dots, x_n\}$. Ràng buộc At-Most-One phát biểu rằng có nhiều nhất một biến trong $X$ nhận giá trị True: $\sum_{i=1}^n x_i \le 1$. Trong nghiên cứu này, 5 kỹ thuật mã hóa AMO chuyên sâu được triển khai và đánh giá chi tiết:
+Cho $X=\{x_1,\dots,x_n\}$, AMO yêu cầu $\sum_{i=1}^n x_i\le1$. Năm kỹ thuật dưới đây được tích hợp trong hệ thống. Các công thức đếm áp dụng cho $n\ge2$ theo cấu trúc được mô tả; trường hợp nhỏ có thể được thư viện rút gọn.
 
 \subsection{Pairwise Encoding (Naive Approach)}
 Phương pháp tổ hợp cặp đôi cổ điển phát biểu rằng hai biến bất kỳ trong $X$ không thể đồng thời nhận giá trị True:
@@ -164,7 +170,7 @@ Phương pháp tổ hợp cặp đôi cổ điển phát biểu rằng hai biế
 \end{itemize}
 
 \subsection{Binary Encoding (Bitwise Approach)}
-Được chuẩn hóa bởi \cite{frisch2005effective}, phương pháp này đánh số nhị phân cho mỗi biến $x_i$ với $m = \lceil \log_2 n \rceil$ biến phụ $b_1, b_2, \dots, b_m$. Mỗi biến $x_i$ được gán với biểu diễn nhị phân của chỉ số $i$. Nếu $x_i = 1$, các biến phụ phải nhận chính xác trạng thái nhị phân của $i$:
+Phương pháp sử dụng $m=\lceil\log_2 n\rceil$ biến phụ $b_1,\dots,b_m$ để đánh số nhị phân các biến đầu vào; xem thảo luận về mã hóa mệnh đề trong \cite{frisch2005effective}. Biến $x_i$ tương ứng với mã của $i-1$. Khi $x_i=1$, các bit phụ phải nhận đúng mã này:
 \begin{equation}
 \text{AMO}_{\text{bin}}(X) = \bigwedge_{i=1}^n \bigwedge_{j=1}^m \Big( \neg x_i \lor \ell(i, j) \Big)
 \end{equation}
@@ -197,9 +203,9 @@ Ta giới thiệu $p$ biến hàng $r_1, \dots, r_p$ và $q$ biến cột $c_1, 
 &\text{AMO}(r_1, \dots, r_p) \land \text{AMO}(c_1, \dots, c_q)
 \end{align}
 \begin{itemize}
-    \item \textbf{Số biến phụ}: $p + q = 2 \lceil \sqrt{n} \rceil = O(\sqrt{n})$.
-    \item \textbf{Số mệnh đề}: $2n + \binom{p}{2} + \binom{q}{2} = O(n)$.
-    \item \textbf{Đặc điểm}: Mã hóa rất nhanh (tuyến tính theo số biến $n$), cấu trúc lưới 2 chiều thanh lịch và số biến phụ chỉ tăng theo căn bậc hai của $n$.
+    \item \textbf{Số biến phụ}: $p+q=O(\sqrt n)$; bằng $2\sqrt n$ khi $n$ là số chính phương, không bằng $2\lceil\sqrt n\rceil$ trong mọi trường hợp.
+    \item \textbf{Số mệnh đề}: $2n+\binom p2+\binom q2=O(n)$ khi dùng Pairwise trên các biến hàng và cột như cài đặt hiện tại.
+    \item \textbf{Đặc điểm}: Cấu trúc lưới giảm số mệnh đề khi $n$ đủ lớn nhưng phát sinh chi phí bổ sung ở nhóm nhỏ.
 \end{itemize}
 
 \subsection{Sequential Counter Encoding}
@@ -212,40 +218,43 @@ Ta giới thiệu $p$ biến hàng $r_1, \dots, r_p$ và $q$ biến cột $c_1, 
 \begin{itemize}
     \item \textbf{Số biến phụ}: $n - 1$.
     \item \textbf{Số mệnh đề}: $3n - 4 = O(n)$.
-    \item \textbf{Đặc tính lý thuyết nổi bật}: Kỹ thuật này duy trì tính \textbf{Arc-consistency} thông qua lan truyền đơn vị (\textit{Unit Propagation}). Nếu một biến $x_i = 1$, solver sẽ lập tức suy diễn toàn bộ các biến còn lại phải bằng $0$ mà không cần thực hiện thêm bước phân nhánh tìm kiếm (branching).
+    \item \textbf{Lan truyền đơn vị}: Khi một biến đầu vào đúng, chuỗi biến phụ cho phép suy ra các biến đầu vào khác sai mà không cần phân nhánh thêm để thực hiện suy diễn này.
 \end{itemize}
 
-\begin{table*}[t]
+Trong bảng dưới, lan truyền được xét trên biến đầu vào của AMO: một biến đúng suy ra các biến còn lại sai, hai biến đúng dẫn đến xung đột. Binary cũng có tính chất này vì hai mã khác nhau có ít nhất một bit khác nhau. Tính chất này không có nghĩa mọi encoding có chi phí lan truyền hoặc tìm kiếm như nhau.
+
+\begin{table}[pos=!htbp]
 \centering
 \small
 \caption{So sánh đặc tính lý thuyết của 5 phương pháp mã hóa At-Most-One (AMO).}
 \label{tab:amo_theory}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}l l c c p{3.6cm}@{}}
 \toprule
 \textbf{Phương pháp AMO} & \textbf{Tác giả / Nguồn} & \textbf{Số biến phụ} & \textbf{Số mệnh đề} & \textbf{Đặc tính Unit Propagation} \\
 \midrule
-Pairwise (Naive) & Cổ điển & $0$ & $\frac{n(n-1)}{2} = O(n^2)$ & Đạt Arc-consistency \\
-Binary (Bitwise) & \cite{frisch2005effective} & $\lceil \log_2 n \rceil$ & $n \lceil \log_2 n \rceil = O(n \log n)$ & Không bảo toàn Arc-consistency \\
-Commander & \cite{klieber2007efficient} & $O(n/k)$ & $O(n)$ & Đạt Arc-consistency \\
-2-Product & \cite{chen2010new} & $2 \lceil \sqrt{n} \rceil = O(\sqrt{n})$ & $2n + \binom{p}{2} + \binom{q}{2} = O(n)$ & Đạt Arc-consistency \\
-Sequential Counter & \cite{sinz2005towards} & $n - 1$ & $3n - 4 = O(n)$ & Bảo toàn Arc-consistency tối ưu \\
+Pairwise (Naive) & Cổ điển & $0$ & $\frac{n(n-1)}{2}=O(n^2)$ & Suy diễn trực tiếp \\
+Binary (Bitwise) & \cite{frisch2005effective} & $\lceil\log_2 n\rceil$ & $n\lceil\log_2 n\rceil=O(n\log n)$ & Suy diễn qua các bit phụ \\
+Commander & \cite{klieber2007efficient} & $O(n)$, $k$ cố định & $O(n)$ & Suy diễn trong và giữa nhóm \\
+2-Product & \cite{chen2010new} & $p+q=O(\sqrt n)$ & $2n+\binom p2+\binom q2=O(n)$ & Qua biến hàng và cột \\
+Sequential Counter & \cite{sinz2005towards} & $n-1$ & $3n-4=O(n)$ & Qua chuỗi biến đếm \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 \section{Các phương pháp giải đối chuẩn khác (Alternative Approaches)}
 
-Để có đánh giá khách quan toàn diện theo yêu cầu đề bài, nghiên cứu thiết lập mô hình hóa Sudoku trên 5 bộ giải chính xác thuộc các nhánh CP và ILP/MIP:
+Để đối chiếu với SAT, hệ thống mô hình hóa Sudoku trên năm cấu hình bộ giải CP và ILP/MIP:
 
 \subsection{Google OR-Tools CP-SAT Solver}
 CP-SAT là bộ giải Constraint Programming kết hợp SAT hiện đại phát triển bởi Google \cite{perron2024ortools}. Trong CP-SAT, Sudoku được mô hình hóa tự nhiên bằng mảng 2 chiều các biến nguyên $y_{r,c} \in \{1, 2, \dots, N\}$. Các ràng buộc hàng, cột và khối con được biểu diễn thông qua ràng buộc toàn cục:
 \begin{equation}
 \texttt{AddAllDifferent}\Big(\{y_{r,c} \mid c = 0 \dots N-1\}\Big)
 \end{equation}
-CP-SAT tự động kích hoạt thuật toán lọc miền giá trị dựa trên đồ thị ghép đôi cực đại (Hopcroft-Karp / Regin's filtering algorithm) kết hợp bộ máy SAT CDCL bên dưới.
+Mã nguồn khai báo \texttt{AddAllDifferent} cho hàng, cột và khối, cùng đẳng thức cho gợi ý. Việc tiền xử lý và lựa chọn cơ chế lan truyền do OR-Tools quyết định; báo cáo không giả định một thuật toán lọc miền cụ thể luôn được kích hoạt.
 
 \subsection{IBM ILOG CPLEX CP Optimizer}
-Bộ giải CP chuyên dụng của IBM khai báo biến kiểu \texttt{integer\_var(1, N)} và áp dụng hàm ràng buộc \texttt{all\_diff()}. CP Optimizer sử dụng kỹ thuật suy diễn miền giá trị liên tục kết hợp tìm kiếm cục bộ (Large Neighborhood Search) và nhánh cận.
+Bộ giải CP của IBM sử dụng biến \texttt{integer\_var(1, N)}, ràng buộc \texttt{all\_diff()} cho hàng, cột, khối và đẳng thức cho gợi ý. Hệ thống gọi bộ máy của CP Optimizer, không tự cài đặt hoặc cấu hình chiến lược tìm kiếm cụ thể.
 
 \subsection{Integer Linear Programming (ILP/MIP): Gurobi, CPLEX MIP \& PuLP/CBC}
 Trong mô hình Quy hoạch tuyến tính nguyên:
@@ -260,7 +269,30 @@ Trong mô hình Quy hoạch tuyến tính nguyên:
     \sum_{r \in \text{block}} \sum_{c \in \text{block}} z_{r,c,d} &= 1 \quad \forall \text{block}, d
     \end{align}
 \end{itemize}
-Mô hình này được nạp trực tiếp vào \textbf{Gurobi Optimizer} (thương mại hàng đầu), \textbf{IBM CPLEX MIP} và solver mã nguồn mở \textbf{CBC} (thông qua giao tiếp PuLP).
+Mô hình được giải bằng Gurobi, CPLEX MIP hoặc CBC thông qua PuLP. Gợi ý được cố định bằng $z_{r,c,v}=1$. Đây là bài toán tìm nghiệm khả thi, không phải tối ưu chất lượng lời giải Sudoku.
+
+\section{Thiết kế và cài đặt hệ thống}
+\label{sec:system}
+\subsection{Kiến trúc và luồng xử lý}
+Chương trình được tổ chức thành các mô-đun độc lập: \texttt{sat\_encodings/} sinh ALO, AMO và EO; \texttt{solvers/} xây dựng mô hình và gọi bộ giải; \texttt{benchmarks/} nạp dữ liệu, đo thời gian và vẽ biểu đồ; \texttt{tests/} kiểm thử; \texttt{main.py} điều phối giao diện dòng lệnh; \texttt{utils.py} cung cấp bảng mẫu, suy ra kích thước khối và in bảng.
+
+Luồng benchmark gồm: đọc snapshot và lọc đề; xây dựng CNF hoặc mô hình CP/MIP; gọi solver; giải mã kết quả; kiểm tra hàng, cột, khối và việc giữ nguyên gợi ý; tổng hợp thống kê rồi xuất kết quả. SAT sử dụng $N^3$ biến cơ sở và cấp các ID phụ phía sau để tránh trùng biến. Pairwise, Commander và Product tự sinh mệnh đề bằng Python; Binary và Sequential Counter gọi \texttt{CardEnc.atmost} của PySAT \cite{ignatiev2018pysat} với kiểu mã hóa tương ứng.
+
+\subsection{Chức năng và cách sử dụng}
+CLI hỗ trợ kích thước 4, 9 và 16; giải một bảng mẫu bằng SAT; benchmark nhanh trên bảng mẫu hoặc benchmark tập dữ liệu; lọc theo kích thước, nguồn và nhãn độ khó; giới hạn số bản ghi; xuất CSV/JSON, biểu đồ và tên tệp có dấu thời gian. API Python cho phép truyền ma trận đề trực tiếp, còn chế độ giải đơn lẻ của CLI hiện chỉ chọn bảng mẫu và encoding, chưa có chức năng nhập đề tùy ý qua tệp.
+\begin{verbatim}
+pip install -r requirements.txt
+python main.py --size 9 --solve product
+python main.py --benchmark-dataset-encodings --size 9 --plot --csv --json
+python main.py --benchmark-dataset-solvers --size 9 --plot --csv --json
+python main.py --test
+\end{verbatim}
+Các lệnh trên minh họa cách sử dụng. Python từ 3.10 trở lên được yêu cầu theo tài liệu dự án. Gurobi và IBM CPLEX cần thư viện và quyền sử dụng phù hợp; lỗi license hoặc môi trường phải được phân biệt với kết quả không có nghiệm. Chức năng \texttt{--prepare-data} tải lại nguồn động, không bảo đảm tái tạo đúng snapshot 299 bản ghi đang đóng gói.
+
+\subsection{Kiểm thử và kiểm tra nghiệm}
+\texttt{test\_encodings.py} duyệt $2^6$ phép gán cho ALO, từng AMO và EO với năm phương pháp, đối chiếu tính khả thỏa với điều kiện số biến đúng. Đây là kiểm thử hữu hạn ở $n=6$, chưa bao phủ mọi kích thước hoặc các trường hợp rỗng và đơn phần tử.
+
+\texttt{test\_solvers.py} kiểm tra bảng mẫu $9\times9$ với các solver; ở $4\times4$ kiểm tra SAT Product, CP-SAT và CBC; ở $16\times16$ kiểm tra SAT Product và CP-SAT. \texttt{test\_dataset.py} kiểm tra chuyển đổi chuỗi--ma trận, định dạng dữ liệu và suy ra độ khó. Bộ kiểm tra nghiệm đối chiếu giá trị, hàng, cột, khối và gợi ý, không chứng minh nghiệm duy nhất. Các bài kiểm tra solver thương mại có cơ chế bỏ qua khi lỗi môi trường; do đó cần xem log cụ thể, không suy ra mọi solver đã vượt qua kiểm thử chỉ từ việc chương trình kết thúc. Báo cáo mô tả phạm vi mã kiểm thử hiện có, không công bố một lần chạy kiểm thử mới.
 
 \section{Kết quả thực nghiệm và Thảo luận (Experimental Evaluation)}
 \label{sec:exp}
@@ -269,19 +301,33 @@ Mô hình này được nạp trực tiếp vào \textbf{Gurobi Optimizer} (thư
 \begin{itemize}
     \item \textbf{Phần cứng}: Intel Core i5-1235U (thế hệ 12), 16 GB RAM, hệ điều hành Windows x64.
     \item \textbf{Môi trường phần mềm}: Python 3.14, thư viện PySAT (python-sat 1.9), OR-Tools 9.15, Gurobi 13.0, CPLEX 22.2 và PuLP 3.3.
-    \item \textbf{Dữ liệu Benchmark}: 299 câu đố chuẩn hóa được lưu trữ tại \texttt{data/benchmark\_dataset.json}:
+    \item \textbf{Dữ liệu Benchmark}: 299 bản ghi trong \texttt{data/benchmark\_dataset.json}:
     \begin{itemize}
-        \item Bảng chuẩn $9 \times 9$: 279 câu đố với 4 cấp độ khó (\textit{19 Easy, 77 Medium, 99 Hard, 84 Expert}). Đây cũng là tập dữ liệu chính dùng cho các Bảng~\ref{tab:cnf_scale}, \ref{tab:solver_benchmark} và các Hình~\ref{fig:encodings}--\ref{fig:solvers}.
-        \item Bảng nhỏ $4 \times 4$: 10 câu đố (Mini-Sudoku).
-        \item Bảng lớn $16 \times 16$ (Hexadoku): 10 câu đố với tỷ lệ gợi ý ban đầu biến thiên từ 18\% đến 55\%.
+        \item Bảng $9\times9$: 279 bản ghi, gồm \textit{19 Easy, 77 Medium, 99 Hard, 84 Expert}; dùng cho Bảng~\ref{tab:solver_benchmark} và Hình~\ref{fig:encodings}--\ref{fig:solvers}.
+        \item Bảng $4\times4$: 10 đề tự sinh.
+        \item Bảng $16\times16$: 10 đề tự sinh, tỷ lệ ô giữ lại được cấu hình từ 18\% đến 55\%. Bảng~\ref{tab:cnf_scale} trình bày cả nhóm $9\times9$ và $16\times16$.
     \end{itemize}
 \end{itemize}
 
+\subsection{Nguồn, chuẩn hóa và đặc điểm dữ liệu}
+Snapshot có 131 bản ghi Norvig (70 top95, 50 easy50, 11 hardest), 148 bản ghi Sudoku Exchange (43 easy, mỗi nhóm medium/hard/diabolical có 35), và 20 bản ghi tự sinh. KaggleHub và Hugging Face là các nguồn loader hỗ trợ tùy chọn, không có bản ghi trong snapshot thực nghiệm hiện tại. Các nguồn trực tuyến được tham khảo tại \url{https://norvig.com/sudoku.html} và \url{https://github.com/grantm/sudoku-exchange-puzzle-bank}.
+
+Schema thống nhất gồm \texttt{id}, \texttt{source}, \texttt{dataset}, \texttt{size}, \texttt{difficulty}, \texttt{clues\_count}, \texttt{puzzle\_string}, \texttt{grid} và các trường nghiệm tùy chọn. Ô trống có giá trị 0; chuỗi dùng ký hiệu chữ cho các giá trị lớn hơn 9. Snapshot hiện chưa có đáp án chuẩn trong trường \texttt{solution\_grid}; tính hợp lệ được kiểm tra bằng luật Sudoku thay vì đối chiếu đáp án lưu sẵn.
+
+Loader ưu tiên nhãn nguồn khi nhận diện được; nếu không, suy ra theo mật độ $\rho=g/N^2$: Expert khi $\rho\le0.27$, Hard khi $0.27<\rho\le0.33$, Medium khi $0.33<\rho\le0.42$, Easy khi $\rho>0.42$. Nhãn của snapshot được dùng nguyên trạng khi phân tích; một số nhãn khác với quy tắc ưu tiên nguồn của loader hiện tại nên không được coi là một chuẩn độ khó thống nhất giữa các nguồn. Số gợi ý chỉ là chỉ báo, không xác định đầy đủ độ khó đối với solver.
+
+Hai bản ghi \texttt{norvig\_easy50\_0009} và \texttt{norvig\_easy50\_0041} trùng đề; do đó có 298 đề phân biệt (278 đề $9\times9$), dù các thống kê cũ vẫn tính trên 299 bản ghi. Các đề $16\times16$ được sinh bằng cách xóa ô từ một nghiệm cơ sở với bộ sinh ngẫu nhiên seed 42. Cách này bảo đảm tồn tại ít nhất một nghiệm nhưng chưa bảo đảm nghiệm duy nhất hoặc độ đa dạng tương đương dữ liệu thu thập độc lập.
+
+\subsection{Định nghĩa phép đo và phạm vi số liệu}
+Benchmark encoding đo riêng thời gian sinh CNF và thời gian gọi \texttt{solver.solve()}; tổng là tổng hai pha này, không gồm khởi tạo solver, nạp CNF, giải mã hoặc kiểm tra nghiệm. Benchmark solver đo toàn bộ lời gọi hàm giải, bao gồm dựng mô hình và các chi phí nằm trong wrapper, nhưng không gồm bước kiểm tra nghiệm bên ngoài. Vì vậy hai loại thời gian không thể so sánh trực tiếp.
+
+Các bảng thời gian và hình trình bày số liệu thực nghiệm đã ghi nhận. Mã hỗ trợ xuất CSV/JSON và kiểm tra nghiệm, nhưng bộ kết quả đi kèm chưa có đủ dữ liệu thô để xác minh độc lập toàn bộ thời gian và tỷ lệ thành công. Vì vậy, các con số được sử dụng ở mức mô tả, chưa phải kết quả tái lập độc lập. Quy mô CNF có thể đối chiếu bằng công thức và đầu vào.
+
 \subsection{Đánh giá quy mô mô hình SAT Encodings (Variables vs Clauses)}
 \label{sec:exp-scale}
-Bảng \ref{tab:cnf_scale} và Hình \ref{fig:encodings} tổng hợp quy mô mô hình CNF sinh ra trên bảng Sudoku $9 \times 9$ và ma trận lớn $16 \times 16$.
+Bảng~\ref{tab:cnf_scale} trình bày hai nhóm kích thước; Hình~\ref{fig:encodings} chỉ dùng nhóm $9\times9$. Với $g$ gợi ý và $a(N)$ mệnh đề AMO mỗi nhóm, tổng CNF là $4N^2[1+a(N)]+g$. Số mệnh đề trung bình được làm tròn đến số nguyên.
 
-\begin{table}[t]
+\begin{table}[pos=!htbp]
 \centering
 \caption{Quy mô trung bình số biến và mệnh đề sinh ra giữa 5 phương pháp AMO trên Sudoku $9 \times 9$ (279 câu đố) và $16 \times 16$ (10 câu đố).}
 \label{tab:cnf_scale}
@@ -300,23 +346,23 @@ Sequential Counter & 3,321 & 7,802 & 19,456 & 46,163 \\
 \end{tabular}
 \end{table}
 
-\begin{figure*}[t]
+\begin{figure}[pos=!htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{fig_encodings.png}
-\caption{So sánh thời gian Encode vs Solve và quy mô số biến phụ/mệnh đề giữa 5 kỹ thuật SAT Encodings trên tập câu đố chuẩn hóa.}
+\caption{Thời gian mã hóa, gọi solve() và quy mô CNF trên 279 bản ghi $9\times9$; tổng hai pha không gồm khởi tạo và nạp CNF.}
 \label{fig:encodings}
-\end{figure*}
+\end{figure}
 
 \textbf{Phân tích}:
 \begin{itemize}
-    \item \textit{Về số lượng mệnh đề (Clauses)}: Phương pháp Pairwise có số lượng mệnh đề lớn nhất và bùng nổ theo hàm bậc hai ($12,014$ clauses trên $9\times9$ và vọt lên $123,987$ clauses trên $16\times16$). Ở kích thước $9\times9$, Binary cho số mệnh đề đúng bằng Pairwise do $\binom{9}{2}=36 = 9\lceil\log_2 9\rceil$; tuy nhiên khi $N$ tăng lên $16$, ưu thế tiệm cận $O(n\log n)$ của Binary thể hiện rõ và số mệnh đề giảm còn $66,643$ (khoảng $-46\%$). Các kỹ thuật tuyến tính Commander, 2-Product và Sequential Counter giảm mạnh hơn nữa, khoảng \textbf{32--35\%} trên $9\times9$ và \textbf{58--63\%} trên $16\times16$ so với Pairwise, kiểm soát chặt chẽ hiện tượng bùng nổ mệnh đề khi $N$ tăng.
-    \item \textit{Về thời gian mã hóa và giải SAT}: Thời gian mã hóa CNF dao động từ $2.8\text{ ms}$ đến $6.9\text{ ms}$, trong đó \textbf{2-Product} nhanh nhất; còn thời gian giải trên Glucose3 cực kỳ ngắn, chỉ từ $0.4\text{ ms}$ đến $0.5\text{ ms}$ cho mọi phương pháp nhờ cơ chế lan truyền đơn vị. So với thời gian giải, chi phí mã hóa chiếm phần lớn tổng thời gian, vì vậy các kỹ thuật có cấu trúc tuyến tính (tiêu biểu là 2-Product) mang lại tổng thời gian xử lý nhỏ nhất.
+    \item \textit{Về số mệnh đề}: Pairwise sinh khoảng $12,014$ mệnh đề ở $9\times9$ và $123,987$ ở $16\times16$. Ở $N=9$, Binary bằng Pairwise vì $\binom92=36=9\lceil\log_2 9\rceil$; ở $N=16$, Binary giảm khoảng $46\%$. Commander, Product và Sequential Counter giảm khoảng $32$--$35\%$ ở $9\times9$ và $58$--$63\%$ ở $16\times16$. Tính trên toàn bảng, Pairwise có quy mô $O(N^4)$, Binary là $O(N^3\log N)$ và các AMO tuyến tính cho quy mô $O(N^3)$.
+    \item \textit{Về thời gian}: Trong số liệu nhóm $9\times9$, mã hóa mất khoảng $2.8$--$6.9\text{ ms}$, còn gọi giải mất $0.4$--$0.5\text{ ms}$. Product cho kết quả tốt ở phép đo hai pha. Chưa thể quy chênh lệch cho riêng unit propagation hoặc độ phức tạp tiệm cận vì cách cài đặt và các chi phí ngoài timer cũng ảnh hưởng đến thực thi.
 \end{itemize}
 
 \subsection{Phân tích độ nhạy cảm theo cấp độ khó (Difficulty Analysis)}
 Hình \ref{fig:difficulty} biểu diễn tổng thời gian (mã hóa + giải) trung bình của 5 phương pháp SAT Encoding qua 4 cấp độ khó: \textit{Easy $\to$ Medium $\to$ Hard $\to$ Expert}.
 
-\begin{figure}[t]
+\begin{figure}[pos=!htbp]
 \centering
 \includegraphics[width=0.85\linewidth]{fig_difficulty.png}
 \caption{Xu hướng biến thiên tổng thời gian (mã hóa + giải) của 5 kỹ thuật SAT Encoding theo các cấp độ khó (Sudoku 9x9).}
@@ -325,18 +371,18 @@ Hình \ref{fig:difficulty} biểu diễn tổng thời gian (mã hóa + giải) 
 
 \textbf{Nhận xét}:
 \begin{itemize}
-    \item \textbf{2-Product} là phương pháp ổn định và nhanh nhất ở \textit{mọi} cấp độ khó, dao động khoảng $2.8$--$4.1\text{ ms}$, nhờ chi phí mã hóa thấp nhất và chỉ sinh thêm $2\lceil\sqrt{n}\rceil$ biến phụ.
-    \item \textbf{Sequential Counter} có tổng thời gian cao nhất (khoảng $6.5$--$8.6\text{ ms}$) vì phải sinh $n-1$ biến đếm cho mỗi ràng buộc Exactly-One, khiến pha mã hóa trở thành nút cổ chai, dù số mệnh đề sinh ra lại ít nhất.
-    \item Thời gian đạt đỉnh tại cấp độ \textit{Hard} rồi giảm nhẹ ở \textit{Expert}; biên độ biến thiên giữa các cấp độ chỉ khoảng $2$--$3\text{ ms}$ và không xuất hiện hiện tượng bùng nổ thời gian (runaway runtime). Điều này cho thấy số lượng gợi ý ban đầu ảnh hưởng không đáng kể tới chi phí xử lý, phần lớn chênh lệch đến từ dao động của pha mã hóa (xem phân tích min-of-60 trên từng câu đố đại diện tại Mục~\ref{sec:cases}).
-    \item Thời gian giải thuần túy trên Glucose3 rất nhỏ, trung bình chỉ $0.4$--$0.5\text{ ms}$ trên toàn tập cho mọi phương pháp, minh chứng cho hiệu quả của cơ chế lan truyền đơn vị trong các encoding tuyến tính. Tuy nhiên, khi đo trên từng câu đố đại diện, phần thời gian này tăng dần theo cấp độ khó do số ô gợi ý giảm (chi tiết tại Mục~\ref{sec:cases}).
+    \item \textbf{Khác biệt giữa các encoding}: Product có tổng thời gian mã hóa và gọi giải tương đối thấp ở cả bốn nhóm, khoảng $2.8$--$4.1\text{ ms}$. Sequential Counter nằm ở mức cao hơn, khoảng $6.5$--$8.6\text{ ms}$, dù sinh ít mệnh đề. Quan sát này gợi ý rằng số mệnh đề chỉ phản ánh một phần chi phí; cách sinh CNF và số biến phụ cũng là những yếu tố đáng xem xét.
+    \item \textbf{Xu hướng theo nhãn độ khó}: Thời gian trung bình không tăng đều từ Easy đến Expert; trong hình, nhóm Hard có giá trị cao hơn nhóm Expert. Vì nhãn được tổng hợp từ nhiều nguồn và một phần dựa trên mật độ gợi ý, thứ tự các nhãn không nhất thiết tương ứng với mức độ khó đối với Glucose3.
+    \item \textbf{Vai trò của hai pha}: Trên nhóm bảng $9\times9$, thời gian mã hóa chiếm phần lớn tổng hai pha, trong khi thời gian gọi giải trung bình ở mức khoảng $0.4$--$0.5\text{ ms}$. Vì vậy, khác biệt về quá trình tìm nghiệm có thể chưa thể hiện rõ trên đường tổng thời gian. Việc xem riêng pha giải sẽ giúp bổ sung góc nhìn về ảnh hưởng của cấu trúc từng đề.
+    \item Nhìn chung, hình cho thấy các encoding có mức chi phí khác nhau nhưng chưa thể hiện một quan hệ đơn giản giữa nhãn độ khó và thời gian xử lý. Các ví dụ ở Mục~\ref{sec:cases} được dùng để quan sát thêm sự khác biệt trên từng đề, thay vì đại diện cho toàn bộ một cấp độ.
 \end{itemize}
 
 \subsection{So sánh đối chuẩn hiệu năng giữa SAT Solver và các Solvers (CP, ILP/MIP)}
 Bảng \ref{tab:solver_benchmark} và Hình \ref{fig:solvers} minh họa kết quả đo lường thời gian thực thi trung bình giữa các công cụ giải khác nhau trên cùng tập dữ liệu chuẩn hóa.
 
-\begin{table}[t]
+\begin{table}[pos=!htbp]
 \centering
-\caption{So sánh thời gian giải trung bình giữa các Solver trên tập 279 câu đố Sudoku $9 \times 9$ chuẩn hóa.}
+\caption{Thời gian toàn bộ hàm giải trên 279 bản ghi $9\times9$; tỷ lệ nghiệm hợp lệ theo số liệu đã ghi nhận.}
 \label{tab:solver_benchmark}
 \begin{tabular}{lccc}
 \toprule
@@ -356,35 +402,35 @@ ILP (PuLP / CBC) & ILP / Branch-and-Cut & 147.10 & 100\% \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure}[pos=!htbp]
 \centering
 \includegraphics[width=0.88\linewidth]{fig_solvers.png}
-\caption{Biểu đồ đối chuẩn thời gian giải giữa SAT Solver (Glucose3) và các bộ giải CP, MIP hàng đầu.}
+\caption{Thời gian thực thi các hàm giải trên 279 bản ghi Sudoku $9\times9$.}
 \label{fig:solvers}
 \end{figure}
 
-\textbf{Thảo luận chuyên sâu}:
+\textbf{Thảo luận}:
 \begin{enumerate}
-    \item \textbf{SAT Solver dẫn đầu về tốc độ}: Với thời gian trung bình $10.7$--$16.9\text{ ms}$ (trung bình khoảng $12.7\text{ ms}$), xét theo encoding SAT nhanh nhất ($10.67\text{ ms}$), SAT Solver (Glucose3) nhanh hơn Gurobi MIP ($17.38\text{ ms}$) khoảng \textbf{1.6 lần}, nhanh hơn CPLEX MIP ($25.50\text{ ms}$) khoảng \textbf{2.4 lần}, nhanh hơn CPLEX CP Optimizer ($44.73\text{ ms}$) khoảng \textbf{4.2 lần} và nhanh hơn solver mã nguồn mở CBC ($147.10\text{ ms}$) tới khoảng \textbf{13.8 lần}. Lý do cốt lõi là bản chất rời rạc thuần túy của Sudoku rất tương thích với cấu trúc biểu diễn nhị phân của SAT cùng cơ chế 2-watched literals của các solver CDCL.
-    \item \textbf{Hiệu năng của CP-SAT (Google OR-Tools)}: CP-SAT khá gần với SAT thuần ($19.01\text{ ms}$), chỉ chậm hơn khoảng $1.5$ lần so với SAT nhanh nhất. Điều này hợp lý về mặt lý thuyết vì kiến trúc bên dưới của CP-SAT thực chất là một bộ giải SAT CDCL được mở rộng để hỗ trợ các biến nguyên và bộ lọc lan truyền ràng buộc.
-    \item \textbf{Vị thế của Gurobi (MIP)}: Gurobi cho kết quả rất cạnh tranh ($17.38\text{ ms}$), gần bằng các encoding SAT chậm hơn, cho thấy các bộ giải MIP thương mại đã tối ưu rất tốt cho lớp bài toán ràng buộc chặt này.
-    \item \textbf{Hạn chế của các bộ giải thuần ILP/MIP}: Các bộ giải MIP xử lý bài toán thông qua việc giải bài toán nới lỏng quy hoạch tuyến tính liên tục (LP Relaxation) bằng phương pháp Simplex hoặc Điểm trong (Interior Point) trước khi cắt nhánh nguyên. Trong bài toán Sudoku, ma trận ràng buộc không đạt tính đơn mô-đun toàn phần (unimodular), nên nghiệm LP nới lỏng thường mang giá trị phân số và cây tìm kiếm phân nhánh bị phình to hơn so với suy diễn logic trực tiếp của SAT. Đây là nguyên nhân chính khiến CBC ($147.10\text{ ms}$) chậm hơn hẳn một bậc độ lớn.
+    \item \textbf{Các cấu hình SAT}: Thời gian trung bình nằm trong khoảng $10.67$--$16.91\text{ ms}$. Commander và Product có kết quả khá gần nhau ($10.67$ và $10.90\text{ ms}$), nên có thể xem chúng là hai lựa chọn đáng chú ý trong phép đo này, thay vì nhấn mạnh thứ hạng từ một chênh lệch nhỏ.
+    \item \textbf{Đối chiếu với CP và MIP}: Gurobi ($17.38\text{ ms}$) và CP-SAT ($19.01\text{ ms}$) có thời gian cùng bậc độ lớn với nhóm SAT; Gurobi khá gần SAT Binary ($16.91\text{ ms}$). CPLEX MIP, CP Optimizer và CBC có thời gian cao hơn trong bảng, nhưng đều được ghi nhận tìm được nghiệm hợp lệ trên tập khảo sát. Kết quả cho thấy cả ba hướng mô hình hóa đều sử dụng được cho các đề $9\times9$ này, với chi phí thực thi khác nhau.
+    \item \textbf{Liên hệ với phép đo encoding}: Product có kết quả thuận lợi khi xét riêng mã hóa cộng gọi giải ở Mục~6.5, còn Commander có giá trị trung bình thấp hơn một chút khi đo toàn bộ hàm giải. Hai quan sát này không mâu thuẫn: phép đo toàn bộ còn tính khởi tạo solver, nạp CNF và giải mã. Việc chọn encoding vì thế nên gắn với công đoạn hoặc mục tiêu sử dụng cần quan tâm.
+    \item \textbf{Cách đọc chênh lệch thời gian}: CBC có khoảng cách rõ hơn so với các cấu hình còn lại, trong khi một số cặp solver chỉ chênh vài mili-giây. Các giá trị phản ánh đồng thời cách dựng mô hình, lớp giao tiếp Python và bộ máy giải, nên phù hợp để so sánh các cài đặt trong dự án hơn là đánh giá riêng thuật toán bên trong từng solver. Đo lặp và tách thời gian dựng mô hình khỏi tìm kiếm sẽ giúp làm rõ hơn những khác biệt này.
 \end{enumerate}
 
 \section{Nghiên cứu trường hợp thực nghiệm (Experimental Case Studies)}
 \label{sec:cases}
 
-Các kết quả ở Bảng~\ref{tab:cnf_scale}--\ref{tab:solver_benchmark} và Hình~\ref{fig:encodings}--\ref{fig:solvers} là số liệu trung bình trên toàn tập 299 câu đố. Để làm rõ cơ chế hoạt động ở mức vi mô và kiểm chứng chéo các kết luận nêu trên, mục này phân tích chi tiết ba trường hợp thực nghiệm: (i) theo kích thước bảng, (ii) theo cấp độ khó và (iii) theo kỹ thuật mã hóa.
+Các bảng và hình tổng hợp dùng tập con ghi tại chú thích, không phải tất cả đều lấy trung bình trên 299 bản ghi. Mục này giữ lại các số liệu từng đề để minh họa kích thước, nhãn độ khó và encoding.
 
-\textbf{Giao thức đo lường.} Câu đố đại diện cho mỗi nhóm được chọn là câu có số gợi ý bằng \textit{trung vị} của nhóm (nhằm tránh các trường hợp ngoại lệ). Mỗi cấu hình (câu đố $\times$ phương pháp mã hóa) được lặp lại $60$ lần; thời gian mã hóa và thời gian giải lấy theo \textbf{giá trị nhỏ nhất} (min-of-60) để loại bỏ nhiễu do bộ thu gom rác (Garbage Collector) của Python; sau đó lặp lại toàn bộ thí nghiệm trong 3 phiên độc lập và lấy \textbf{trung vị} giữa các phiên. Tất cả các lần chạy đều cho nghiệm hợp lệ (đã kiểm tra lại toàn bộ hàng, cột, khối và mọi gợi ý ban đầu). Do CPU thử nghiệm (Intel Core i5-1235U) liên tục thay đổi tần số (turbo boost), thời gian mã hóa dao động khoảng $\pm 30\%$ giữa các phiên đo, vì vậy các giá trị thời gian chỉ mang tính đại diện định tính; ngược lại, \textbf{số biến và số mệnh đề là các hằng số tuyệt đối}, lặp lại chính xác qua mọi lần chạy.
+\textbf{Phạm vi kiểm chứng.} Các đề được định danh cụ thể trong từng bảng. Thời gian case study là số liệu tham khảo đã ghi nhận; bộ mã và dữ liệu thô đi kèm chưa đủ để tái tạo việc chọn mẫu theo trung vị gợi ý hoặc xác nhận giao thức lấy cực tiểu 60 lần trong ba phiên. Do đó, các bảng không được dùng như ước lượng thời gian điển hình hay bằng chứng về độ ổn định. Số biến và mệnh đề có thể đối chiếu với đầu vào và công thức. Lấy cực tiểu nhiều lần cũng không bảo đảm loại bỏ hoàn toàn nhiễu.
 
 \subsection{Trường hợp theo kích thước bảng ($4\times4$, $9\times9$, $16\times16$)}
 Ba câu đố đại diện lần lượt là \texttt{matrix4x4\_0002} ($4\times4$, 4 gợi ý), \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý) và \texttt{hexadoku16x16\_0005} ($16\times16$, 77 gợi ý). Bảng~\ref{tab:case_size} tổng hợp quy mô CNF và thời gian tương ứng.
 
-\begin{table*}[t]
+\begin{table}[pos=!htbp]
 \centering
 \footnotesize
-\caption{Quy mô CNF và thời gian trên ba câu đố đại diện theo kích thước bảng (min-of-60, trung vị của 3 phiên đo). Ký hiệu: Seq. Counter $=$ Sequential Counter.}
+\caption{Quy mô CNF và thời gian tham khảo đã ghi nhận trên ba đề. Seq. Counter là Sequential Counter; tổng chỉ gồm mã hóa và gọi solve().}
 \label{tab:case_size}
 \begin{tabular}{@{}c l c l r r r r r@{}}
 \toprule
@@ -409,20 +455,20 @@ Ba câu đố đại diện lần lượt là \texttt{matrix4x4\_0002} ($4\times
  & & & Seq. Counter & 19,456 & 46,157 & 30.73 & 3.53 & 34.26 \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 \textbf{Nhận xét}:
 \begin{itemize}
-    \item \textbf{Quy luật tăng trưởng}: số mệnh đề của Pairwise bám sát hàm bậc hai và vượt mốc $120.000$ mệnh đề ở $16\times16$ ($123,981$), gấp $2.69$ lần 2-Product ($46,157$) — tương ứng mức giảm $63\%$; so với Sequential Counter ($46,157$ mệnh đề) mức tăng cũng là $2.69$ lần. Ba kỹ thuật tuyến tính (Commander, 2-Product, Sequential Counter) chỉ sinh $46$--$52$ nghìn mệnh đề nên kiểm soát tốt hiện tượng bùng nổ.
-    \item \textbf{Khoảng cách thời gian nới rộng theo kích thước}: ở $4\times4$ cả 5 phương pháp đều dưới $0.8\text{ ms}$; ở $9\times9$ khoảng cách còn nhỏ ($2.93$--$7.34\text{ ms}$); đến $16\times16$ khác biệt trở nên rõ rệt khi 2-Product ($17.87\text{ ms}$) nhanh hơn Pairwise ($34.22\text{ ms}$) và Sequential Counter ($34.26\text{ ms}$) khoảng \textbf{1.9 lần}, nhanh hơn Binary ($32.92\text{ ms}$) khoảng $1.8$ lần.
-    \item \textbf{Trường hợp đặc biệt $4\times4$}: với $n=4$ quá nhỏ, 2-Product lại sinh \textit{nhiều mệnh đề hơn} Pairwise ($708$ so với $452$) vì chi phí sinh lưới chi phối: $2n + \binom{p}{2} + \binom{q}{2} = 2\cdot4 + 1 + 1 = 10$ mệnh đề cho mỗi ràng buộc Exactly-One, lớn hơn $\binom{4}{2} = 6$ của Pairwise. Kết quả này cho thấy các encoding tuyến tính chỉ phát huy ưu thế từ khoảng $n \ge 9$ trở lên.
-    \item \textbf{Chi phí mã hóa luôn chi phối}: ở cả ba kích thước, thời gian giải thuần túy đều nhỏ hơn thời gian mã hóa từ khoảng 3 đến 6 lần, khẳng định lại nhận định ở Mục~\ref{sec:exp-scale}.
+    \item Pairwise sinh $123,981$ mệnh đề trên đề $16\times16$, gấp khoảng $2.69$ lần Product hoặc Sequential Counter ($46,157$). AMO Pairwise tăng $O(n^2)$ trong một nhóm; vì Sudoku có $4N^2$ nhóm nên tổng CNF tăng $O(N^4)$, so với $O(N^3)$ khi dùng AMO tuyến tính.
+    \item Product có tổng hai pha thấp nhất trên hai đề $9\times9$ và $16\times16$ trong bảng. Một đề mỗi kích thước chưa đủ đại diện hiệu năng toàn nhóm.
+    \item Với $4\times4$, Product sinh 10 mệnh đề AMO mỗi nhóm so với 6 của Pairwise; cộng ALO thì có 11 và 7 mệnh đề EO. Tổng lần lượt là $64\times11+4=708$ và $64\times7+4=452$. Ưu thế tiệm cận không bảo đảm ưu thế ở nhóm nhỏ.
+    \item Mã hóa lâu hơn gọi giải ở các hàng trong bảng, nhưng tỷ trọng này không gồm nạp CNF và không thay thế phép đo toàn bộ hàm giải.
 \end{itemize}
 
 \subsection{Trường hợp theo cấp độ khó}
 Hai bảng~\ref{tab:case_diff} và \ref{tab:case_diff_solve} trình bày kết quả trên bốn câu đố $9\times9$ đại diện cho bốn cấp độ khó, với số gợi ý giảm dần từ $36$ (Easy) xuống $23$ (Expert).
 
-\begin{table}[t]
+\begin{table}[pos=!htbp]
 \centering
 \small
 \caption{Tổng thời gian (mã hóa + giải, ms) trên bốn câu đố $9\times9$ đại diện: \texttt{norvig\_easy50\_0005} (Easy), \texttt{norvig\_easy50\_0003} (Medium), \texttt{norvig\_top95\_0012} (Hard) và \texttt{norvig\_hardest\_0002} (Expert).}
@@ -439,7 +485,7 @@ Expert & 23 & 4.13 & 8.32 & 5.53 & 4.90 & 7.37 \\
 \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[pos=!htbp]
 \centering
 \small
 \caption{Thời gian giải thuần túy (ms, chỉ tính pha \texttt{Glucose3.solve()}) trên cùng bốn câu đố $9\times9$ đại diện theo cấp độ khó.}
@@ -458,15 +504,15 @@ Expert & 23 & 0.67 & 1.14 & 1.52 & 1.60 & 1.36 \\
 
 \textbf{Nhận xét}:
 \begin{itemize}
-    \item \textbf{Tổng thời gian tăng nhẹ và gần như đơn điệu} khi độ khó tăng: 2-Product từ $3.27$ lên $4.90\text{ ms}$ ($+50\%$), Sequential Counter từ $5.00$ lên $7.37\text{ ms}$ ($+47\%$) và Pairwise từ $3.23$ lên $4.13\text{ ms}$ ($+28\%$). Biên độ tuyệt đối giữa Easy và Expert chỉ dưới $2.5\text{ ms}$ nên vẫn khẳng định số gợi ý ảnh hưởng không lớn tới tổng thời gian.
-    \item \textbf{Nguyên nhân nằm ở pha giải}: thời gian giải thuần túy tăng từ $2.1$ đến $5.0$ lần khi đi từ Easy ($36$ gợi ý) đến Expert ($23$ gợi ý): Pairwise $0.32 \to 0.67\text{ ms}$; Binary $0.48 \to 1.14\text{ ms}$; Commander $0.32 \to 1.52\text{ ms}$; 2-Product $0.33 \to 1.60\text{ ms}$; Sequential Counter $0.21 \to 1.36\text{ ms}$. Khi số gợi ý giảm, ít mệnh đề đơn nguyên được nạp trước nên khả năng lan truyền đơn vị giảm và solver phải thực hiện nhiều bước phân nhánh hơn. Trong khi đó, pha mã hóa gần như độc lập với độ khó vì chỉ phụ thuộc vào $N$ và số gợi ý.
-    \item \textbf{Liên hệ với Hình~\ref{fig:difficulty}}: hình đó biểu diễn \textit{trung bình cộng} trên toàn bộ câu đố mỗi cấp (dễ bị chi phối bởi các ngoại lệ thời gian mã hóa do GC, có lần lên tới $\sim 35\text{ ms}$) nên đường cong có đỉnh tại cấp \textit{Hard}; hai bảng trên dùng \textit{trung vị} min-of-60 trên một câu đại diện nên cho xu hướng tăng đơn điệu. Cả hai quan sát hội tụ về cùng một kết luận: chênh lệch tổng thời gian giữa 4 cấp độ chỉ vài mili-giây, và phần chênh lệch chủ yếu nằm ở pha giải chứ không phải pha mã hóa.
+    \item Từ đề Easy đến Expert, Product tăng $3.27\to4.90\text{ ms}$, Sequential Counter $5.00\to7.37\text{ ms}$ và Pairwise $3.23\to4.13\text{ ms}$. Dãy số không tăng đơn điệu ở mọi phương pháp; Product không thấp nhất trong cả bốn hàng.
+    \item Tỷ số thời gian gọi giải Expert/Easy khoảng $2.1$--$6.5$ lần, riêng Sequential Counter là $1.36/0.21\approx6.5$. Bốn đề khác nhau chưa đủ để tách ảnh hưởng số gợi ý khỏi cấu trúc đề và nguồn dữ liệu.
+    \item Các bảng từng đề và Hình~\ref{fig:difficulty} dùng tập quan sát khác nhau nên xu hướng không nhất thiết trùng nhau. Chưa có dữ liệu thô để quy khác biệt cho GC, turbo boost hay một ngoại lệ cụ thể. Cần đo lặp có kiểm soát trước khi kết luận độ nhạy theo độ khó.
 \end{itemize}
 
 \subsection{Trường hợp theo kỹ thuật mã hóa}
 Bảng~\ref{tab:case_enc} phân rã cấu trúc file CNF của câu đố $9\times9$ đại diện (26 gợi ý) theo từng kỹ thuật mã hóa.
 
-\begin{table*}[t]
+\begin{table}[pos=!htbp]
 \centering
 \small
 \caption{Phân rã cấu trúc CNF của câu đố \texttt{norvig\_top95\_0053} ($9\times9$, 26 gợi ý): $324$ ràng buộc Exactly-One ($4N^2$) tương ứng $324$ mệnh đề ALO, $26$ mệnh đề đơn nguyên từ gợi ý, phần còn lại là AMO.}
@@ -482,18 +528,18 @@ Commander & 1,701 & 972 & 8,126 & 324 & 7,776 & 26 & 3.05 & 0.43 \\
 Sequential Counter & 3,321 & 2,592 & 7,802 & 324 & 7,452 & 26 & 5.50 & 0.38 \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
 \textbf{Nhận xét}:
 \begin{itemize}
-    \item \textbf{Kiểm chứng công thức lý thuyết}: mỗi bảng $9\times9$ sinh chính xác $4N^2 = 324$ ràng buộc Exactly-One (hàng, cột, khối, ô), tương ứng $324$ mệnh đề ALO và $26$ mệnh đề đơn nguyên từ gợi ý. Số mệnh đề AMO cho \textit{mỗi} ràng buộc Exactly-One khớp chính xác với Mục~3: Pairwise $36 = \binom{9}{2}$; Binary $36 = 9\lceil\log_2 9\rceil = 9 \times 4$; Commander $24$; 2-Product $24 = 2 \times 9 + \binom{3}{2} + \binom{3}{2}$; Sequential Counter $23 = 3 \times 9 - 4$. Vì vậy Commander và 2-Product cắt $33\%$ số mệnh đề AMO, Sequential Counter cắt $36\%$; tính trên tổng số mệnh đề, mức giảm lần lượt là $32\%$ và $35\%$ so với Pairwise.
-    \item \textbf{Kiểm chứng số biến phụ}: các giá trị đo được cũng đúng bằng công thức: Binary $1,296 = 324 \times \lceil\log_2 9\rceil$; Commander $972 = 324 \times \lceil 9/3\rceil$; 2-Product $1,944 = 324 \times (p + q) = 324 \times 6$; Sequential Counter $2,592 = 324 \times (n-1)$. Điều này xác nhận các cài đặt trong mã nguồn triển khai đúng đặc tả lý thuyết.
-    \item \textbf{Thời gian}: 2-Product cho thời gian mã hóa nhỏ nhất ($2.50\text{ ms}$) và cũng nhỏ nhất ở pha giải ($0.43\text{ ms}$). Binary ($6.81\text{ ms}$) và Sequential Counter ($5.50\text{ ms}$) chậm nhất ở pha mã hóa do cả hai đều gọi thư viện PySAT để sinh mệnh đề, trong khi Pairwise, Commander và 2-Product được cài đặt trực tiếp bằng Python nên ít chi phí gọi hàm hơn.
+    \item Có 324 EO, 324 ALO và 26 mệnh đề gợi ý. AMO mỗi nhóm sinh lần lượt 36, 36, 24, 24, 23 mệnh đề, phù hợp các công thức đã trình bày. Đây là kiểm tra quy mô, chưa phải chứng minh đúng đắn ngữ nghĩa.
+    \item Biến phụ lần lượt là $324\times4=1,296$ (Binary), $324\times3=972$ (Commander ở kích thước này), $324\times6=1,944$ (Product), $324\times8=2,592$ (Sequential Counter). Với Commander lớn hơn cần tính cả các tầng đệ quy.
+    \item Product mã hóa nhanh nhất ($2.50\text{ ms}$), nhưng Sequential Counter gọi giải nhanh nhất ($0.38\text{ ms}$). Khác biệt giữa gọi PySAT và tự sinh Python chưa đủ để kết luận chi phí thư viện là nguyên nhân chính.
 \end{itemize}
 
-Bảng~\ref{tab:case_grid} minh họa một trường hợp cụ thể: đề bài $9\times9$ có 26 gợi ý và nghiệm duy nhất do Glucose3 (mã hóa 2-Product) tìm được, đã được kiểm tra thỏa mãn toàn bộ 5 nhóm ràng buộc của bài toán.
+Bảng~\ref{tab:case_grid} minh họa đề có 26 gợi ý và một nghiệm hợp lệ được ghi nhận với Glucose3, mã hóa Product. Nghiệm thỏa hàng, cột, khối và gợi ý; chưa khẳng định duy nhất vì quy trình hiện chỉ tìm một nghiệm, không loại nghiệm đó để kiểm tra nghiệm thứ hai.
 
-\begin{table}[t]
+\begin{table}[pos=!htbp]
 \centering
 \small
 \caption{Câu đố $9\times9$ đại diện \texttt{norvig\_top95\_0053} (26 gợi ý) và nghiệm do Glucose3 với mã hóa 2-Product tìm được.}
@@ -537,21 +583,19 @@ Bảng~\ref{tab:case_grid} minh họa một trường hợp cụ thể: đề b�
 \end{table}
 
 \section{Kết luận và Hướng phát triển (Conclusion)}
-Bài báo đã hoàn thành nghiên cứu toàn diện về việc mô hình hóa logic và giải bài toán Sudoku tổng quát $N \times N$ bằng SAT Encoding và đối chuẩn với các công cụ CP/MIP:
-\begin{itemize}
-    \item Triển khai hoàn chỉnh 5 kỹ thuật mã hóa ràng buộc số lượng At-Most-One: Pairwise, Binary, Commander, 2-Product, và Sequential Counter.
-    \item Chứng minh thực nghiệm rằng \textbf{2-Product Encoding} đạt sự cân bằng tốt nhất giữa số biến phụ ($O(\sqrt{n})$), số mệnh đề sinh ra và tổng thời gian xử lý ($2.8$--$4.1\text{ ms}$ trên mọi cấp độ khó); trong khi \textbf{Sequential Counter} sinh ít mệnh đề nhất nhưng tốn nhiều biến phụ và thời gian mã hóa nhất.
-    \item Khẳng định lợi thế về tốc độ của tiếp cận \textbf{SAT Solving} đối với lớp bài toán logic tổ hợp hữu hạn so với các bộ giải tối ưu hóa toán học truyền thống (ILP/MIP), dù các bộ giải MIP thương mại (Gurobi) đã bám sát khoảng cách rất nhỏ.
-\end{itemize}
+Bài tập lớn xây dựng hệ thống Sudoku bằng SAT và tích hợp CP/MIP để so sánh. Pairwise, Commander và Product được tự cài đặt; Binary và Sequential Counter sử dụng PySAT. Công thức CNF thể hiện sự đánh đổi giữa biến phụ và mệnh đề khi tăng kích thước.
 
-\textbf{Hướng phát triển trong tương lai}: Nghiên cứu mở rộng sang các biến thể Sudoku phức tạp hơn (như Killer Sudoku, Diagonal Sudoku, Greater-Than Sudoku) đòi hỏi kết hợp kỹ thuật thỏa mãn modulo lý thuyết (SMT - Satisfiability Modulo Theories) và tối ưu hóa thỏa mãn lớn nhất (MaxSAT).
+Trong số liệu đã ghi nhận, Product có chi phí hai pha thấp ở nhiều cấu hình, còn Commander có thời gian toàn bộ hàm giải trung bình thấp nhất ở bảng $9\times9$. Không có encoding tốt nhất độc lập với tiêu chí đo, kích thước và cài đặt. Kết quả chưa chứng minh ưu thế tổng quát của SAT trước CP/MIP.
 
-\section*{Data Availability (Tính sẵn sàng của dữ liệu)}
-Toàn bộ mã nguồn chương trình, bộ dữ liệu 299 câu đố benchmark chuẩn hóa, các script đo lường tự động và hình ảnh biểu đồ thực nghiệm chi tiết được công khai phục vụ cộng đồng học thuật tại GitHub repository:
+Hướng phát triển gần nhất là hoàn thiện kiểm tra đầu vào, khử trùng dữ liệu, kiểm tra duy nhất, bổ sung đo lặp và dữ liệu thô. Sau đó có thể khảo sát Diagonal hoặc Killer Sudoku bằng ràng buộc phù hợp; SMT và MaxSAT là hướng bổ sung, không bắt buộc cho mọi biến thể.
+
+\section*{Tính sẵn có của mã nguồn và dữ liệu (Data Availability)}
+Mã nguồn, snapshot 299 bản ghi, script benchmark và biểu đồ được lưu tại dự án dưới đây.
 \begin{center}
 \url{https://github.com/nmson8206/Sudoku_prj}
 \end{center}
 
+\FloatBarrier
 \bibliographystyle{cas-model2-names}
 \bibliography{references}
 
